@@ -3,7 +3,7 @@
 
 """
 Java Bindings Generator
-Copyright (C) 2012-2014 Matthias Bolte <matthias@tinkerforge.com>
+Copyright (C) 2012-2015 Matthias Bolte <matthias@tinkerforge.com>
 Copyright (C) 2011-2013 Olaf Lüke <olaf@tinkerforge.com>
 
 generate_java_bindings.py: Generator for Java bindings
@@ -68,12 +68,14 @@ import java.util.List;
  */
 public class {0} extends Device {{
 \tpublic final static int DEVICE_IDENTIFIER = {2};
+\tpublic final static String DEVICE_DISPLAY_NAME = "{3}";
 
 """
 
         return class_str.format(self.get_java_class_name(),
                                 self.get_description(),
-                                self.get_device_identifier())
+                                self.get_device_identifier(),
+                                self.get_long_display_name())
 
     def get_matlab_callback_data_objects(self):
         objs = ''
@@ -383,34 +385,34 @@ public class {0} extends Device {{
         return function_ids
 
     def get_java_constants(self):
-        constant = '\tpublic final static {0} {1}_{2} = {3}{4};\n'
+        template = '\tpublic final static {0} {1}_{2} = {3}{4};\n'
         constants = []
         for constant_group in self.get_constant_groups():
             typ = java_common.get_java_type(constant_group.get_type())
 
-            for constant_item in constant_group.get_items():
+            for constant in constant_group.get_constants():
                 if constant_group.get_type() == 'char':
                     cast = ''
                     if self.get_generator().is_octave():
-                        value = "new String(new char[]{{'{0}'}})".format(constant_item.get_value())
+                        value = "new String(new char[]{{'{0}'}})".format(constant.get_value())
                         typ = 'String'
                     else:
-                        value = "'{0}'".format(constant_item.get_value())
+                        value = "'{0}'".format(constant.get_value())
                 else:
                     if typ == 'int':
                         cast = '' # no need to cast int, its the default type for number literals
                     else:
                         cast = '({0})'.format(typ)
 
-                    value = str(constant_item.get_value())
+                    value = str(constant.get_value())
 
                     if typ == 'long':
                         cast = ''
                         value += 'L' # mark longs as such, because int is the default type for number literals
 
-                constants.append(constant.format(typ,
+                constants.append(template.format(typ,
                                                  constant_group.get_upper_case_name(),
-                                                 constant_item.get_upper_case_name(),
+                                                 constant.get_upper_case_name(),
                                                  cast,
                                                  value))
         return '\n' + ''.join(constants)
@@ -669,7 +671,7 @@ class JavaBindingsPacket(java_common.JavaPacket):
             if not with_obj:
                 typ = element.get_java_type()
 
-                if self.get_device().get_generator().is_octave() and typ == 'char':
+                if self.get_generator().is_octave() and typ == 'char':
                     typ = 'String'
 
                 typ += ' '
@@ -690,7 +692,7 @@ class JavaBindingsPacket(java_common.JavaPacket):
             elif element.get_type() == 'bool':
                 suffix = ' != 0'
             elif element.get_type() == 'char':
-                if self.get_device().get_generator().is_octave():
+                if self.get_generator().is_octave():
                     cast = 'new String(new char[]{(char)'
                     suffix = '})'
                 else:
@@ -744,6 +746,11 @@ class JavaBindingsGenerator(common.BindingsGenerator):
     def get_element_class(self):
         return java_common.JavaElement
 
+    def prepare(self):
+        self.device_factory_classes = []
+
+        return common.BindingsGenerator.prepare(self)
+
     def generate(self, device):
         filename = '{0}.java'.format(device.get_java_class_name())
         suffix = ''
@@ -758,7 +765,45 @@ class JavaBindingsGenerator(common.BindingsGenerator):
         java.close()
 
         if device.is_released():
+            self.device_factory_classes.append(device.get_java_class_name())
             self.released_files.append(filename)
+
+    def finish(self):
+        template = """{0}
+package com.tinkerforge;
+
+public class DeviceFactory {{
+	public static Device createDevice(int deviceIdentifier, String uid, IPConnection ipcon) throws Exception {{
+		return getDeviceClass(deviceIdentifier).getConstructor(String.class, IPConnection.class).newInstance(uid, ipcon);
+	}}
+
+	public static Class<? extends Device> getDeviceClass(int deviceIdentifier) {{
+		switch (deviceIdentifier) {{
+{1}
+		default: throw new IllegalArgumentException("Unknown device identifier: " + deviceIdentifier);
+		}}
+	}}
+}}
+"""
+        date = datetime.datetime.now().strftime("%Y-%m-%d")
+        version = common.get_changelog_version(self.get_bindings_root_directory())
+        classes = []
+
+        for name in sorted(self.device_factory_classes):
+            classes.append('\t\tcase {0}.DEVICE_IDENTIFIER: return {0}.class;'.format(name))
+
+        suffix = ''
+
+        if self.is_matlab():
+            suffix = '_matlab'
+        elif self.is_octave():
+            suffix = '_octave'
+
+        java = open(os.path.join(self.get_bindings_root_directory(), 'bindings' + suffix, 'DeviceFactory.java'), 'wb')
+        java.write(template.format(common.gen_text_star.format(date, *version), '\n'.join(classes)))
+        java.close()
+
+        return common.BindingsGenerator.finish(self)
 
     def is_matlab(self):
         return False

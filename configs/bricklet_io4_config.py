@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 1],
     'category': 'Bricklet',
     'device_identifier': 29,
-    'name': ('IO4', 'io4', 'IO-4'),
+    'name': ('IO4', 'io4', 'IO-4', 'IO-4 Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling up to 4 general purpose input/output pins',
+    'description': {
+        'en': '4-channel digital input/output',
+        'de': '4 digitale Ein- und Ausgänge'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -544,4 +548,16 @@ Gibt den Flankentyp sowie die Entprellzeit für den ausgewählten Pin zurück,
 wie von :func:`SetEdgeCountConfig` gesetzt.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Output',
+'functions': [('setter', 'Set Configuration', [('uint8:bitmask:4', 1 << 1), ('char', 'o'), ('bool', False)], 'Set pin 1 to output low', None),
+              ('setter', 'Set Configuration', [('uint8:bitmask:4', (1 << 2) | (1 << 3)), ('char', 'o'), ('bool', True)], 'Set pin 2 and 3 to output high', None)]
+})
+
+com['examples'].append({
+'name': 'Interrupt',
+'functions': [('callback', ('Interrupt', 'interrupt'), [(('interrupt_mask', 'Interrupt Mask'), 'uint8:bitmask:4', None, None, None, None), (('value_mask', 'Value Mask'), 'uint8:bitmask:4', None, None, None, None)], None, None),
+              ('setter', 'Set Interrupt', [('uint8:bitmask:4', 1 << 0)], 'Enable interrupt on pin 0', None)]
 })

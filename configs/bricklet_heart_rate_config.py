@@ -6,16 +6,22 @@
 
 # Heart Rate Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Ishraq Ibne Ashraf <ishraq@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 245,
-    'name': ('HeartRate', 'heart_rate', 'Heart Rate'),
+    'name': ('HeartRate', 'heart_rate', 'Heart Rate', 'Heart Rate Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing heart rate',
+    'description': {
+        'en': 'Measures heart rate',
+        'de': 'Misst Herzfrequenz'
+    },
     'released': False,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -93,11 +99,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetHeartRateCallbackThreshold', 'set_heart_rate_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -144,11 +146,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetHeartRateCallbackThreshold', 'get_heart_rate_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -352,3 +350,20 @@ Gibt *true* zurück wenn der :func:`BeatStateChanged` Callback aktiviert ist.
 }]
 })
 
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Heart Rate', 'heart rate'), [(('heart_rate', 'Heart Rate'), 'uint16', None, 'bpm', 'bpm', None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Heart Rate', 'heart rate'), [(('heart_rate', 'Heart Rate'), 'uint16', None, 'bpm', 'bpm', None)], None, None),
+              ('callback_period', ('Heart Rate', 'heart rate'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 10000),
+              ('callback', ('Heart Rate Reached', 'heart rate reached'), [(('heart_rate', 'Heart Rate'), 'uint16', None, 'bpm', 'bpm', None)], None, None),
+              ('callback_threshold', ('Heart Rate', 'heart rate'), [], '>', [(100, 0)])]
+})

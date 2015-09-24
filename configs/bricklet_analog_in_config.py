@@ -6,16 +6,22 @@
 
 # Analog In Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
-    'api_version': [2, 0, 2],
+    'api_version': [2, 0, 3],
     'category': 'Bricklet',
     'device_identifier': 219,
-    'name': ('AnalogIn', 'analog_in', 'Analog In'),
+    'name': ('AnalogIn', 'analog_in', 'Analog In', 'Analog In Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing Voltages between 0 and 45V',
+    'description': {
+        'en': 'Measures DC voltage between 0V and 45V',
+        'de': 'Misst Gleichspannung zwischen 0V und 45V'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -183,13 +189,9 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetVoltageCallbackThreshold', 'set_voltage_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
-             ('min', 'int16', 1, 'in'),
-             ('max', 'int16', 1, 'in')],
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
+             ('min', 'uint16', 1, 'in'),
+             ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
 'doc': ['ccf', {
 'en':
@@ -234,13 +236,9 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetVoltageCallbackThreshold', 'get_voltage_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
-             ('min', 'int16', 1, 'out'),
-             ('max', 'int16', 1, 'out')],
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
+             ('min', 'uint16', 1, 'out'),
+             ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['ccf', {
 'en':
@@ -258,11 +256,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetAnalogValueCallbackThreshold', 'set_analog_value_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -309,11 +303,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetAnalogValueCallbackThreshold', 'get_analog_value_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -515,7 +505,7 @@ Sets the measurement range. Possible ranges:
 * 2: 0V - 10.32V, ~2.52mV resolution
 * 3: 0V - 36.30V, ~8.86mV resolution
 * 4: 0V - 45.00V, ~11.25mV resolution
-* 5: 0V - 3.3V, ~0.81mV resolution, new in version 2.0.3 (Plugin)
+* 5: 0V - 3.3V, ~0.81mV resolution, new in version 2.0.3$nbsp;(Plugin)
 
 The default measurement range is 0.
 """,
@@ -528,7 +518,7 @@ Setzt den Messbereich. Mögliche Bereiche:
 * 2: 0V - 10,32V, ~2,52mV Auflösung
 * 3: 0V - 36,30V, ~8,86mV Auflösung
 * 4: 0V - 45,00V, ~11,25mV Auflösung
-* 5: 0V - 3,3V, ~0,81mV Auflösung, neu in Version 2.0.3 (Plugin)
+* 5: 0V - 3,3V, ~0,81mV Auflösung, neu in Version 2.0.3$nbsp;(Plugin)
 
 Der Standardbereich ist 0.
 """
@@ -602,4 +592,22 @@ Gibt die Averaging-Konfiguration zurück, wie von :func:`SetAveraging`
 gesetzt.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Voltage', 'voltage'), [(('voltage', 'Voltage'), 'uint16', 1000.0, 'mV', 'V', None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Voltage', 'voltage'), [(('voltage', 'Voltage'), 'uint16', 1000.0, 'mV', 'V', None)], None, None),
+              ('callback_period', ('Voltage', 'voltage'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 10000),
+              ('callback', ('Voltage Reached', 'voltage reached'), [(('voltage', 'Voltage'), 'uint16', 1000.0, 'mV', 'V', None)], None, None),
+              ('callback_threshold', ('Voltage', 'voltage'), [], '<', [(5, 0)])]
 })

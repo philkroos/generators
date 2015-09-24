@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 214,
-    'name': ('PiezoBuzzer', 'piezo_buzzer', 'Piezo Buzzer'),
+    'name': ('PiezoBuzzer', 'piezo_buzzer', 'Piezo Buzzer', 'Piezo Buzzer Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling a piezo buzzer',
+    'description': {
+        'en': 'Creates 1kHz beep',
+        'de': 'Erzeugt 1kHz Piepton'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -105,4 +109,14 @@ Dieser Callback wird ausgelöst wenn die Wiedergabe des Morsecodes, wie von
 :func:`MorseCode` gesetzt, beendet wurde.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Beep',
+'functions': [('setter', 'Beep', [('uint32', 2000)], 'Make 2 second beep', None)]
+})
+
+com['examples'].append({
+'name': 'Morse Code',
+'functions': [('setter', 'Morse Code', [('string', '... --- ...')], 'Morse SOS', None)]
 })

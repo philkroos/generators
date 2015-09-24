@@ -6,16 +6,22 @@
 
 # Temperature Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 216,
-    'name': ('Temperature', 'temperature', 'Temperature'),
+    'name': ('Temperature', 'temperature', 'Temperature', 'Temperature Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing Temperature',
+    'description': {
+        'en': 'Measures ambient temperature with 0.5°C accuracy',
+        'de': 'Misst Umgebungstemperatur mit 0,5°C Genauigkeit'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -97,11 +103,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetTemperatureCallbackThreshold', 'set_temperature_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int16', 1, 'in'),
              ('max', 'int16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -148,11 +150,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetTemperatureCallbackThreshold', 'get_temperature_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int16', 1, 'out'),
              ('max', 'int16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -334,3 +332,20 @@ Gibt den I2C Modus zurück, wie von :func:`SetI2CMode` gesetzt.
 }]
 })
 
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Temperature', 'temperature'), [(('temperature', 'Temperature'), 'int16', 100.0, '°C/100', '°C', None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Temperature', 'temperature'), [(('temperature', 'Temperature'), 'int16', 100.0, '°C/100', '°C', None)], None, None),
+              ('callback_period', ('Temperature', 'temperature'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 10000),
+              ('callback', ('Temperature Reached', 'temperature reached'), [(('temperature', 'Temperature'), 'int16', 100.0, '°C/100', '°C', None)], None, 'It is too hot, we need air conditioning!'),
+              ('callback_threshold', ('Temperature', 'temperature'), [], '>', [(30, 0)])]
+})

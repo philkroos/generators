@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 240,
-    'name': ('HallEffect', 'hall_effect', 'Hall Effect'),
+    'name': ('HallEffect', 'hall_effect', 'Hall Effect', 'Hall Effect Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device that detects presence of magnetic field via hall effect',
+    'description': {
+        'en': 'Detects presence of magnetic field',
+        'de': 'Detektiert Magnetfelder'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -289,4 +293,15 @@ sind der aktuelle Zählerstand und der aktuelle Wert (siehe
 der beiden Werte seit der letzten Auslösung geändert hat.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Edge Count', 'edge count without reset'), [(('edge_count', 'Edge Count'), 'uint32', None, None, None, None)], [('bool', False)])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Edge Count', 'edge count'), [(('edge_count', 'Edge Count'), 'uint32', None, None, None, None), (('value', None), 'bool', None, None, None, None)], None, None),
+              ('callback_period', ('Edge Count', 'edge count'), [], 50)]
 })

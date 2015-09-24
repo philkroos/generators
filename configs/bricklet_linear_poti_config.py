@@ -6,16 +6,22 @@
 
 # Linear Poti Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 213,
-    'name': ('LinearPoti', 'linear_poti', 'Linear Poti'),
+    'name': ('LinearPoti', 'linear_poti', 'Linear Poti', 'Linear Poti Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing Linear Potentiometer input',
+    'description': {
+        'en': '59mm linear potentiometer',
+        'de': '59mm Linearpotentiometer'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -182,13 +188,9 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetPositionCallbackThreshold', 'set_position_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
-             ('min', 'int16', 1, 'in'),
-             ('max', 'int16', 1, 'in')],
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
+             ('min', 'uint16', 1, 'in'),
+             ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
 'doc': ['ccf', {
 'en':
@@ -233,13 +235,9 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetPositionCallbackThreshold', 'get_position_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
-             ('min', 'int16', 1, 'out'),
-             ('max', 'int16', 1, 'out')],
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
+             ('min', 'uint16', 1, 'out'),
+             ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['ccf', {
 'en':
@@ -257,11 +255,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetAnalogValueCallbackThreshold', 'set_analog_value_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -308,11 +302,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetAnalogValueCallbackThreshold', 'get_analog_value_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -492,4 +482,15 @@ Wenn der Schwellwert erreicht bleibt, wird der Callback mit der Periode, wie
 mit :func:`SetDebouncePeriod` gesetzt, ausgelöst.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Position', 'position'), [(('position', 'Position'), 'uint16', None, None, None, (0, 100))], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Position', 'position'), [(('position', 'Position'), 'uint16', None, None, None, (0, 100))], None, None),
+              ('callback_period', ('Position', 'position'), [], 50)]
 })

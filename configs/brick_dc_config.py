@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Brick',
     'device_identifier': 11,
-    'name': ('DC', 'dc', 'DC'),
+    'name': ('DC', 'dc', 'DC', 'DC Brick'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling DC motors',
+    'description': {
+        'en': 'Drives one brushed DC motor with up to 28V and 5A (peak)',
+        'de': 'Steuert einen Gleichstrommotor mit bis zu 28V und 5A (Peak)'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -777,3 +781,23 @@ Geschwindigkeit geändert hat.
 #"""
 #}]
 #})
+
+com['examples'].append({
+'name': 'Configuration',
+'functions': [('setter', 'Set PWM Frequency', [('uint16', 10000)], None, 'Use PWM frequency of 10kHz'),
+              ('setter', 'Set Drive Mode', [('uint8', 1)], None, 'Use drive/coast instead of drive/brake'),
+              ('setter', 'Set Acceleration', [('uint16', 5000)], None, 'Slow acceleration'),
+              ('setter', 'Set Velocity', [('int16', 32767)], None, 'Full speed forward'),
+              ('setter', 'Enable', [], None, 'Enable motor power')],
+'cleanups': [('setter', 'Disable', [], None, 'Disable motor power')]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('setter', 'Set Acceleration', [('uint16', 5000)], 'The acceleration has to be smaller or equal to the maximum acceleration of\nthe DC motor, otherwise velocity reached callback will be called too early', 'Slow acceleration'),
+              ('setter', 'Set Velocity', [('int16', 32767)], None, 'Full speed forward'),
+              ('callback', ('Velocity Reached', 'velocity reached'), [(('velocity', 'Velocity'), 'int16', None, None, None, None)], None, None),
+              ('setter', 'Enable', [], 'Enable motor power', None)],
+'cleanups': [('setter', 'Disable', [], None, 'Disable motor power')],
+'incomplete': True # because of special print logic in callback
+})

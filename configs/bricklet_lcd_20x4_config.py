@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 212,
-    'name': ('LCD20x4', 'lcd_20x4', 'LCD 20x4'),
+    'name': ('LCD20x4', 'lcd_20x4', 'LCD 20x4', 'LCD 20x4 Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling a LCD with 4 lines a 20 characters',
+    'description': {
+        'en': '20x4 character alphanumeric display with blue backlight',
+        'de': '20x4 Zeichen alphanumerisches Display mit blauer Hintergrundbeleuchtung'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -421,3 +425,19 @@ Gibt den aktuellen Wert des Standard-Text-Zählers zurück.
 """
 }]
 })
+
+com['examples'].append({
+'name': 'Hello World',
+'functions': [('setter', 'Backlight On', [], 'Turn backlight on', None),
+              ('setter', 'Write Line', [('uint8', 0), ('uint8', 0), ('string', 'Hello World')], 'Write "Hello World"', None)]
+})
+
+com['examples'].append({
+'name': 'Button Callback',
+'functions': [('callback', ('Button Pressed', 'button pressed'), [(('button', 'Button Pressed'), 'uint8', None, None, None, None)], None, None),
+              ('callback', ('Button Released', 'button released'), [(('button', 'Button Released'), 'uint8', None, None, None, None)], None, None)]
+})
+
+#com['examples'].append({
+#'name': 'Unicode'
+#})

@@ -3,7 +3,7 @@
 
 """
 C# Bindings Generator
-Copyright (C) 2012-2013 Matthias Bolte <matthias@tinkerforge.com>
+Copyright (C) 2012-2015 Matthias Bolte <matthias@tinkerforge.com>
 Copyright (C) 2011-2012 Olaf Lüke <olaf@tinkerforge.com>
 
 generate_csharp_bindings.py: Generator for C# bindings
@@ -54,14 +54,20 @@ namespace Tinkerforge
 \t{{
 \t\t/// <summary>
 \t\t///  Used to identify this device type in
-\t\t///  <see cref="Tinkerforge.IPConnection.EnumerateCallback"/>
+\t\t///  <see cref="Tinkerforge.IPConnection.EnumerateCallback"/>.
 \t\t/// </summary>
 \t\tpublic static int DEVICE_IDENTIFIER = {2};
+
+\t\t/// <summary>
+\t\t///  The display name of this device.
+\t\t/// </summary>
+\t\tpublic static string DEVICE_DISPLAY_NAME = "{3}";
 """
 
         return class_str.format(self.get_csharp_class_name(),
                                 self.get_description(),
-                                self.get_device_identifier())
+                                self.get_device_identifier(),
+                                self.get_long_display_name())
 
     def get_csharp_delegates(self):
         cbs = '\n'
@@ -102,22 +108,22 @@ namespace Tinkerforge
         return function_ids
 
     def get_csharp_constants(self):
-        constant = """
+        template = """
 \t\t/// <summary>
 \t\t/// </summary>
 \t\tpublic const {0} {1}_{2} = {3};
 """
         constants = []
         for constant_group in self.get_constant_groups():
-            for constant_item in constant_group.get_items():
+            for constant in constant_group.get_constants():
                 if constant_group.get_type() == 'char':
-                    value = "'{0}'".format(constant_item.get_value())
+                    value = "'{0}'".format(constant.get_value())
                 else:
-                    value = str(constant_item.get_value())
+                    value = str(constant.get_value())
 
-                constants.append(constant.format(csharp_common.get_csharp_type(constant_group.get_type(), 1),
+                constants.append(template.format(csharp_common.get_csharp_type(constant_group.get_type(), 1),
                                                  constant_group.get_upper_case_name(),
-                                                 constant_item.get_upper_case_name(),
+                                                 constant.get_upper_case_name(),
                                                  value))
         return '\n' + ''.join(constants)
 

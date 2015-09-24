@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/prism.css">
+    <script type="text/javascript" src="js/FileSaver.js"></script>
+    <script type="text/javascript" src="../blockly_compressed.js"></script>
+    <script type="text/javascript" src="../blocks_compressed.js"></script>
+    <script type="text/javascript" src="../msg/js/en.js"></script>
+    <script type="text/javascript" src="../javascript_compressed.js"></script>
+    <script type="text/javascript" src="../python_compressed.js"></script>
+    <script type="text/javascript" src="../blocks/tinkerforge.js"></script>
+    <title>Tinkerforge Visual Programming Language</title>
+  </head>
+
+  <body>
+    <input id="workspaceFileUploader" type="file" onchange="workspaceFileUploadRequest(this)" />
+
+    <table id="tableHeader">
+      <tr>
+        <td>
+          <h2 align="center">Tinkerforge Visual Programming Language</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <hr/>
+        </td>
+      </tr>
+      <tr>
+        <td id="tdCompatibilityErrorMessage" align="center">
+          <p id="pCompatibilityErrorMessage">Seems like the browser you are using is not compatible to be used for Tinkerforge Visual Programming Language.</p>
+        </td>
+      </tr>
+      <tr>
+        <td id ="tdTableHeaderToolbar" align="center">
+          <button id="buttonToolbar" title="Show the workspace" onclick="clickedEditor();">
+            <img src="media/editor.png" width="32" height="32"/>
+          </button>
+          <button id="buttonToolbar" title="Execute code generated from current workspace" onclick="clickedExecute();">
+            <img src="media/execute.png" width="32" height="32"/>
+          </button>
+          <button id="buttonToolbar" title="View generated code" onclick="clickedViewCode();">
+            <img src="media/code.png" width="32" height="32"/>
+          </button>
+          <button id="buttonToolbar" title="Save current state of the workspace" onclick="clickedSave();">
+            <img src="media/save.png" width="32" height="32"/>
+          </button>
+          <button id="buttonToolbar" title="Load previously saved workspace state" onclick="clickedLoadWorkspace();">
+            <img src="media/restore.png" width="32" height="32"/>
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <hr/>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Blockly editor -->
+    <div id="blocklyArea"/>
+    <div id="blocklyDiv"/>
+
+    <!-- Execution view -->
+    <div id="divExecute">
+      <table id="tableExecute">
+        <tr>
+          <td align="center">
+            <button id="buttonToolbarRunStop" title="Run graphical program from workspace" onclick="clickedRunProgram();">
+              <img id="buttonToolbarRunStopImage" src="media/runcode.png" width="32" height="32"/>
+            </button>
+            <button id="buttonToolbar" title="Clear output" onclick="clickedClearOutput();">
+              <img src="media/clear.png" width="32" height="32"/>
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <textarea readonly id="textareaExecute" rows="32"></textarea>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Code viewer -->
+    <div id="divCode">
+      <table id="tableCode">
+        <tr>
+          <td align="center">
+            <b>Generate Code:</b>
+            <select id="selectLanguageCode" onchange="updateCodeViewer()">
+              <option value="js">JavaScript</option>
+              <option value="py">Python</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+<pre>
+<code id="codeContent" class="line-numbers language-javascript">
+</code>
+</pre>
+    </div>
+
+    <script type="text/javascript" >
+      var tdCompatibilityErrorMessage = document.getElementById('tdCompatibilityErrorMessage');
+      var xmlHttp;
+      var xmlBlocklyToolbox;
+      var xmlBlocklyToolboxLoaded;
+
+      function browserSupportsWebWorkers(e) {
+        return typeof window.Worker === "function";
+      }
+
+      function browserSupportsYield(e) {
+        try {
+          eval("(function *(){yield 1;})");
+        } catch(e) {
+          return false;
+        }
+        return true;
+      }
+
+      function browserSupportsBlobs() {
+        if (window.FileReader && window.File && window.FileList && window.Blob) {
+          return true;
+        }
+        return false;
+      }
+
+      /*
+        If being launched locally then Google Chrome must be launched with "--allow-file-access-from-files" parameter
+        to be able to use TVPL.
+      */
+      try {
+        if (window.XMLHttpRequest) {
+          xmlHttp = new XMLHttpRequest();
+        } else {
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlHttp.open('GET', 'xml/toolbox.xml', false);
+        xmlHttp.send();
+        xmlBlocklyToolbox = xmlHttp.responseXML;
+        xmlBlocklyToolboxLoaded = true;
+      } catch(e) {
+          xmlBlocklyToolboxLoaded = false;
+      }
+
+      if (!browserSupportsWebWorkers() || !browserSupportsYield() || !browserSupportsBlobs || !xmlBlocklyToolboxLoaded) {
+          tdCompatibilityErrorMessage.style.display = 'block';
+      }
+      else {
+        var HIGHLIGHT_NONE = 1;
+        var HIGHLIGHT_JS = 2;
+        var HIGHLIGHT_PY = 3;
+        var VIEW_EDITOR = 4;
+        var VIEW_EXECUTE = 5;
+        var VIEW_CODE = 6;
+        var TVPL_WORKER_CMD_END = '____TVPL:WORKER:CMD:END____';
+        var DEFAULT_CODE = 'Seems like the workspace is empty. Generated code will appear here...';
+        var MSG_ERROR_NOT_VALID_WORKSPACE_FILE = 'ERROR: Not a valid workspace file.';
+        var MSG_ERROR_FILE_READ_FAILED = 'ERROR: Reading file failed.';
+        var MSG_ERROR_WORKSPACE_LOAD_FAILED = 'ERROR: Failed to load worskspace from file. Check that the file is valid workspace file.';
+        var MSG_INFO_UNSAVED_WORKSPACE = 'Unsaved changes on the workspace will be lost.';
+        var MSG_INFO_PROGRAM_RUNNING = 'A program is already running. Stop the running program to start a new one.'
+        var MSG_INFO_WORKSPACE_EMPTY = 'Nothing to execute. Seems like the workspace is empty.';
+        var tdTableHeaderToolbar = document.getElementById('tdTableHeaderToolbar');
+        var blocklyArea = document.getElementById('blocklyArea');
+        var blocklyDiv = document.getElementById('blocklyDiv');
+        var blocklyToolbox = document.getElementById('blocklyToolbox');
+        var divExecute = document.getElementById('divExecute');
+        var textareaExecute = document.getElementById('textareaExecute');
+        var workerExecuteCode = null;
+        var selectLanguageCode = document.getElementById("selectLanguageCode");
+        var codeContent = document.getElementById('codeContent');
+        var divCode = document.getElementById('divCode');
+        var buttonToolbarRunStop = document.getElementById('buttonToolbarRunStop');
+        var buttonToolbarRunStopImage = document.getElementById('buttonToolbarRunStopImage');
+        var fileReader = new FileReader();
+        var blocklyWorkspace = Blockly.inject(blocklyDiv,
+          {grid:
+            {spacing: 25,
+             length: 3,
+             Colour: '#ccc',
+             snap: true},
+            media: '../media/',
+            trashcan: true,
+            toolbox: xmlBlocklyToolbox.getElementById('blocklyToolbox'),
+            zoom: {enabled: true}});
+
+        tdTableHeaderToolbar.style.display = 'block';
+
+        function clickedClearOutput(e) {
+          textareaExecute.value = '';
+        }
+
+        function clickedRunProgram(e){
+          var code = '';
+
+          if (workerExecuteCode) {
+            alert(MSG_INFO_PROGRAM_RUNNING);
+            return;
+          }
+          code = Blockly.JavaScript.workspaceToCode(blocklyWorkspace);
+          if (code === '') {
+            alert(MSG_INFO_WORKSPACE_EMPTY);
+            return;
+          }
+          workerExecuteCode = new Worker('js/workerExecuteCode.js');
+          workerExecuteCode.onmessage = function(e) {
+            if (e.data === TVPL_WORKER_CMD_END) {
+              clickedStopProgram();
+            }
+            else {
+              textareaExecute.value += e.data;
+              textareaExecute.scrollTop = textareaExecute.scrollHeight;
+            }
+          };
+          workerExecuteCode.postMessage(code);
+
+          buttonToolbarRunStop.setAttribute('onclick','clickedStopProgram()');
+          buttonToolbarRunStopImage.setAttribute('src', 'media/stopcode.png');
+        }
+
+        function clickedStopProgram(e) {
+          if (workerExecuteCode) {
+            workerExecuteCode.terminate();
+            workerExecuteCode = null;
+          }
+          buttonToolbarRunStop.setAttribute('onclick','clickedRunProgram()');
+          buttonToolbarRunStopImage.setAttribute('src', 'media/runcode.png');
+        }
+
+        function workspaceFileUploadRequest(fileInput) {
+          var file;
+          var xmlText;
+          if(fileInput.value.substr(-5) !== ".tvpl" ) {
+            alert(MSG_ERROR_NOT_VALID_WORKSPACE_FILE);
+            return;
+          }
+          try {
+            file = fileInput.files[0];
+            fileReader.onload = function(e) {
+              xmlText = fileReader.result;
+              if (xmlText === '') {
+                return;
+              }
+              try {
+                blocklyWorkspace.clear();
+                Blockly.Xml.domToWorkspace(blocklyWorkspace, Blockly.Xml.textToDom(xmlText));
+              }
+              catch(e) {
+                alert(MSG_ERROR_WORKSPACE_LOAD_FAILED);
+              }
+            }
+            fileReader.readAsText(file);
+          }
+          catch(e){
+            alert(MSG_ERROR_FILE_READ_FAILED);
+          }
+        }
+
+        function switchView(view) {
+          if (view == VIEW_EDITOR) {
+              divExecute.style.display = 'none';
+              divCode.style.display = 'none';
+              blocklyWorkspace.setVisible(true);
+          } else if(view == VIEW_EXECUTE) {
+              blocklyWorkspace.setVisible(false);
+              divCode.style.display = 'none';
+              divExecute.style.display = 'block';
+          } else if (view == VIEW_CODE) {
+              blocklyWorkspace.setVisible(false);
+              divExecute.style.display = 'none';
+              divCode.style.display = 'block';
+          }
+        }
+
+        function clickedEditor(e) {
+          switchView(VIEW_EDITOR);
+        }
+
+        function clickedExecute(e) {
+          switchView(VIEW_EXECUTE);
+        }
+
+        function clickedViewCode(e) {
+          switchView(VIEW_CODE);
+        }
+
+        function clickedSave(e) {
+          var xmlText = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(blocklyWorkspace));
+          saveAs(new Blob([xmlText], {type: "text/xml;charset=utf-8"}), 'workspace.tvpl');
+        }
+
+        function clickedLoadWorkspace(e) {
+          workspaceFileUploader.click();
+        }
+
+        function updateCodeViewer(e) {
+          var code = DEFAULT_CODE;
+          var language = selectLanguageCode.options[selectLanguageCode.selectedIndex].value;
+
+          if (language == 'js') {
+              code = Blockly.JavaScript.workspaceToCode(blocklyWorkspace);
+              if (code == '') {
+                codeContent.innerHTML = DEFAULT_CODE;
+                Prism.highlightElement(codeContent);
+                return;
+              }
+              codeContent.innerHTML = code;
+              Prism.highlightElement(codeContent);
+          } else if (language == 'py') {
+              code = Blockly.Python.workspaceToCode(blocklyWorkspace);
+              if (code == '') {
+                codeContent.innerHTML = DEFAULT_CODE;
+                Prism.highlightElement(codeContent);
+                return;
+              }
+              codeContent.innerHTML = code;
+              Prism.highlightElement(codeContent);
+          } else {
+              codeContent.innerHTML = code;
+              Prism.highlightElement(codeContent);
+          }
+        }
+
+        function onLoad(e) {
+          textareaExecute.value = '';
+          codeContent.innerHTML = DEFAULT_CODE;
+          Prism.highlightElement(codeContent);
+        }
+
+        function onResize(e) {
+          // Compute the absolute coordinates and dimensions of blocklyArea.
+          var element = blocklyArea;
+          var x = 0;
+          var y = 0;
+          do {
+            x += element.offsetLeft;
+            y += element.offsetTop;
+            element = element.offsetParent;
+          } while (element);
+          // Position blocklyDiv over blocklyArea.
+          blocklyDiv.style.left = x + 'px';
+          blocklyDiv.style.top = y + 'px';
+          blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+          blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+        }
+        window.addEventListener('resize', onResize, false);
+        window.addEventListener('load', onLoad, false);
+        window.onbeforeunload = function(e) {
+          return MSG_INFO_UNSAVED_WORKSPACE;
+          clickedStopProgram();
+        }
+        blocklyWorkspace.addChangeListener(updateCodeViewer);
+        onResize();
+      }
+    </script>
+
+    <script type="text/javascript"  src="js/prism.js"></script>
+
+  </body>
+</html>

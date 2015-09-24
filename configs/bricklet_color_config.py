@@ -6,16 +6,22 @@
 
 # Color Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Ishraq Ibne Ashraf <ishraq@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 243,
-    'name': ('Color', 'color', 'Color'),
+    'name': ('Color', 'color', 'Color', 'Color Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for measuring color (RGB value), illuminance and color temperature',
+    'description': {
+        'en': 'Measures color (RGB value), illuminance and color temperature',
+        'de': 'Misst Farbe (RGB Wert), Beleuchtungsstärke und Farbtemperatur'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -118,11 +124,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetColorCallbackThreshold', 'set_color_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min_r', 'uint16', 1, 'in'),
              ('max_r', 'uint16', 1, 'in'),
              ('min_g', 'uint16', 1, 'in'),
@@ -175,11 +177,7 @@ Der Standardwert ist ('x', 0, 0, 0, 0, 0, 0, 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetColorCallbackThreshold', 'get_color_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min_r', 'uint16', 1, 'out'),
              ('max_r', 'uint16', 1, 'out'),
              ('min_g', 'uint16', 1, 'out'),
@@ -297,20 +295,22 @@ com['packets'].append({
 'doc': ['c', {
 'en':
 """
-This callback is triggered periodically with the period that is set by
-:func:`SetColorCallbackPeriod`. The :word:`parameter` is the color
+This callback is triggered when the threshold as set by
+:func:`SetColorCallbackThreshold` is reached.
+The :word:`parameter` is the color
 of the sensor as RGBC.
 
-:func:`Color` is only triggered if the color has changed since the
-last triggering.
+If the threshold keeps being reached, the callback is triggered periodically
+with the period as set by :func:`SetDebouncePeriod`.
 """,
 'de':
 """
-Dieser Callback wird mit der Periode, wie gesetzt mit :func:`SetColorCallbackPeriod`,
-ausgelöst. Der :word:`parameter` ist die Farbe des Sensors als RGBC.
+Dieser Callback wird ausgelöst wenn der Schwellwert, wie von 
+:func:`SetColorCallbackThreshold` gesetzt, erreicht wird.
+Der :word:`parameter` ist die Farbe des Sensors als RGBC.
 
-:func:`Color` wird nur ausgelöst wenn sich die Farbe seit der
-letzten Auslösung geändert hat.
+Wenn der Schwellwert erreicht bleibt, wird der Callback mit der Periode, wie
+mit :func:`SetDebouncePeriod` gesetzt, ausgelöst.
 """
 }]
 })
@@ -685,3 +685,20 @@ letzten Auslösung geändert hat.
 }]
 })
 
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Color', 'color'), [(('r', 'Color[R]'), 'uint16', None, None, None, None), (('g', 'Color[G]'), 'uint16', None, None, None, None), (('b', 'Color[B]'), 'uint16', None, None, None, None), (('c', 'Color[C]'), 'uint16', None, None, None, None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Color', 'color'), [(('r', 'Color[R]'), 'uint16', None, None, None, None), (('g', 'Color[G]'), 'uint16', None, None, None, None), (('b', 'Color[B]'), 'uint16', None, None, None, None), (('c', 'Color[C]'), 'uint16', None, None, None, None)], None, None),
+              ('callback_period', ('Color', 'color'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 10000),
+              ('callback', ('Color Reached', 'color reached'), [(('r', 'Color[R]'), 'uint16', None, None, None, None), (('g', 'Color[G]'), 'uint16', None, None, None, None), (('b', 'Color[B]'), 'uint16', None, None, None, None), (('c', 'Color[C]'), 'uint16', None, None, None, None)], None, None),
+              ('callback_threshold', ('Color', 'color'), [], '>', [(100, 0), (200, 0), (300, 0), (400, 0)])]
+})

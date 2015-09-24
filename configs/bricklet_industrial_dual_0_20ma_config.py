@@ -6,16 +6,22 @@
 
 # Industrial Dual 0-20mA Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 228,
-    'name': ('IndustrialDual020mA', 'industrial_dual_0_20ma', 'Industrial Dual 0-20mA'), 
+    'name': ('IndustrialDual020mA', 'industrial_dual_0_20ma', 'Industrial Dual 0-20mA', 'Industrial Dual 0-20mA Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing two currents between 0 and 20mA (IEC 60381-1)',
+    'description': {
+        'en': 'Measures two DC currents between 0mA and 20mA (IEC 60381-1)',
+        'de': 'Misst zwei Gleichströme zwischen 0mA und 20mA (IEC 60381-1)'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['api'] = {
@@ -132,11 +138,7 @@ com['packets'].append({
 'type': 'function',
 'name': ('SetCurrentCallbackThreshold', 'set_current_callback_threshold'), 
 'elements': [('sensor', 'uint8', 1, 'in'),
-             ('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+             ('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int32', 1, 'in'),
              ('max', 'int32', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -186,11 +188,7 @@ com['packets'].append({
 'type': 'function',
 'name': ('GetCurrentCallbackThreshold', 'get_current_callback_threshold'), 
 'elements': [('sensor', 'uint8', 1, 'in'),
-             ('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+             ('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int32', 1, 'out'),
              ('max', 'int32', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -380,4 +378,22 @@ Wenn der Schwellwert erreicht bleibt, wird der Callback mit der Periode, wie
 mit :func:`SetDebouncePeriod` gesetzt, ausgelöst.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Current', 'current from sensor 1'), [(('current', 'Current (Sensor 1)'), 'int32', 1000000.0, 'nA', 'mA', None)], [('uint8', 1)])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Current', 'current'), [(('sensor', 'Sensor'), 'uint8', None, None, None, None), (('current', 'Current'), 'int32', 1000000.0, 'nA', 'mA', None)], None, None),
+              ('callback_period', ('Current', 'current (sensor 1)'), [('uint8', 1)], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 10000),
+              ('callback', ('Current Reached', 'current reached'), [(('sensor', 'Sensor'), 'uint8', None, None, None, None), (('current', 'Current'), 'int32', 1000000.0, 'nA', 'mA', None)], None, None),
+              ('callback_threshold', ('Current', 'current (sensor 1)'), [('uint8', 1)], '>', [(10, 0)])]
 })

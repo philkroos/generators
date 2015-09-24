@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 1],
     'category': 'Bricklet',
     'device_identifier': 28,
-    'name': ('IO16', 'io16', 'IO-16'),
+    'name': ('IO16', 'io16', 'IO-16', 'IO-16 Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling up to 16 general purpose input/output pins',
+    'description': {
+        'en': '16-channel digital input/output',
+        'de': '16 digitale Ein- und Ausgänge'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -565,4 +569,16 @@ Gibt den Flankentyp sowie die Entprellzeit für den ausgewählten Pin von Port A
 zurück, wie von :func:`SetEdgeCountConfig` gesetzt.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Output',
+'functions': [('setter', 'Set Port Configuration', [('char', 'a'), ('uint8:bitmask:8', 1 << 0), ('char', 'o'), ('bool', False)], 'Set pin 0 on port A to output low', None),
+              ('setter', 'Set Port Configuration', [('char', 'b'), ('uint8:bitmask:8', (1 << 0) | (1 << 7)), ('char', 'o'), ('bool', True)], 'Set pin 0 and 7 on port B to output high', None)]
+})
+
+com['examples'].append({
+'name': 'Interrupt',
+'functions': [('callback', ('Interrupt', 'interrupt'), [(('port', 'Port'), 'char', None, None, None, None), (('interrupt_mask', 'Interrupt Mask'), 'uint8:bitmask:8', None, None, None, None), (('value_mask', 'Value Mask'), 'uint8:bitmask:8', None, None, None, None)], None, None),
+              ('setter', 'Set Port Interrupt', [('char', 'a'), ('uint8:bitmask:8', 1 << 2)], 'Enable interrupt on pin 2 of port A', None)]
 })

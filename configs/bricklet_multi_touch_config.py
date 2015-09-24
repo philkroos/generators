@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 234,
-    'name': ('MultiTouch', 'multi_touch', 'Multi Touch'),
+    'name': ('MultiTouch', 'multi_touch', 'Multi Touch', 'Multi Touch Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device with 12 touch sensors',
+    'description': {
+        'en': 'Capacitive touch sensor for 12 electrodes',
+        'de': 'Kapazitiver Touch Sensor für 12 Elektroden'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -234,3 +238,14 @@ Gibt die aktuelle Empfindlichkeit zurück, wie von
 }]
 })
 
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Touch State', 'touch state'), [(('state', 'Touch State'), 'uint16', None, None, None, None)], [])],
+'incomplete': True # because of special print logic
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Touch State', 'touch state'), [(('state', 'Touch State'), 'uint16', None, None, None, None)], None, None)],
+'incomplete': True # because of special print logic in callback
+})

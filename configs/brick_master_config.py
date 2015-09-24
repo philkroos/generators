@@ -6,16 +6,22 @@
 
 # Master Brick communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
-    'api_version': [2, 0, 3],
+    'api_version': [2, 0, 4],
     'category': 'Brick',
     'device_identifier': 13,
-    'name': ('Master', 'master', 'Master'),
+    'name': ('Master', 'master', 'Master', 'Master Brick'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling Stacks and four Bricklets',
+    'description': {
+        'en': 'Basis to build stacks and has 4 Bricklet ports',
+        'de': 'Grundlage um Stapel zu bauen und bietet 4 Bricklet Anschlüsse'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -67,7 +73,8 @@ com['packets'].append({
              ('exttype', 'uint32', 1, 'in', ('ExtensionType', 'extension_type', [('Chibi', 'chibi', 1),
                                                                                  ('RS485', 'rs485', 2),
                                                                                  ('Wifi', 'wifi', 3),
-                                                                                 ('Ethernet', 'ethernet', 4)]))], 
+                                                                                 ('Ethernet', 'ethernet', 4),
+                                                                                 ('Wifi2', 'wifi2', 5)]))],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
 'en':
@@ -86,6 +93,7 @@ Possible extension types:
  "2",    "RS485"
  "3",    "WIFI"
  "4",    "Ethernet"
+ "5",    "WIFI 2.0"
 
 The extension type is already set when bought and it can be set with the 
 Brick Viewer, it is unlikely that you need this function.
@@ -106,6 +114,7 @@ Mögliche Extensiontypen:
  "2",    "RS485"
  "3",    "WIFI"
  "4",    "Ethernet"
+ "5",    "WIFI 2.0"
 
 Der Typ der Extension ist schon gesetzt beim Erwerb der Extension und kann
 über den Brick Viewer gesetzt werden. Daher ist es unwahrscheinlich, dass
@@ -121,7 +130,8 @@ com['packets'].append({
              ('exttype', 'uint32', 1, 'out', ('ExtensionType', 'extension_type', [('Chibi', 'chibi', 1),
                                                                                   ('RS485', 'rs485', 2),
                                                                                   ('Wifi', 'wifi', 3),
-                                                                                  ('Ethernet', 'ethernet', 4)]))],
+                                                                                  ('Ethernet', 'ethernet', 4),
+                                                                                  ('Wifi2', 'wifi2', 5)]))],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
 'en':
@@ -894,7 +904,7 @@ Example for EAP-TTLS + EAP-GTC + Private Key: ``option = 2 | (1 << 2) | (2 << 3)
 The values are stored in the EEPROM and only applied on startup. That means
 you have to restart the Master Brick after configuration.
 
-It is recommended to use the Brick Viewer to set the WIFI encryption.
+It is recommended to use the Brick Viewer to set the Wi-Fi encryption.
 """,
 'de':
 """
@@ -941,7 +951,7 @@ Beispiel für EAP-TTLS + EAP-GTC + Private Key: ``option = 2 | (1 << 2) | (2 << 
 Die Werte sind im EEPROM gespeichert und werden nur beim Start angewandt.
 Das bedeutet der Master Brick muss nach einer Konfiguration neu gestartet werden.
 
-Wir empfehlen den Brick Viewer zu nutzen um die WIFI Extension Verschlüsselung
+Wir empfehlen den Brick Viewer zu nutzen um die WLAN Verschlüsselung
 zu konfigurieren.
 """
 }]
@@ -1048,8 +1058,8 @@ com['packets'].append({
 'doc': ['af', {
 'en':
 """
-Refreshes the WIFI status (see :func:`GetWifiStatus`). To read the status
-of the WIFI module, the Master Brick has to change from data mode to
+Refreshes the Wi-Fi status (see :func:`GetWifiStatus`). To read the status
+of the Wi-Fi module, the Master Brick has to change from data mode to
 command mode and back. This transaction and the readout itself is
 unfortunately time consuming. This means, that it might take some ms
 until the stack with attached WIFI Extension reacts again after this
@@ -1057,8 +1067,8 @@ function is called.
 """,
 'de':
 """
-Aktualisiert den WIFI Status (siehe :func:`GetWifiStatus`). Um den Status
-vom WIFI Modul zu lesen, muss der Master Brick vom Datenmodus in den
+Aktualisiert den WLAN Status (siehe :func:`GetWifiStatus`). Um den Status
+vom WLAN Modul zu lesen, muss der Master Brick vom Datenmodus in den
 Kommandomodus und wieder zurück wechseln. Dieser Wechsel und das eigentliche
 Auslesen ist leider zeitaufwändig. Dass heißt, es dauert ein paar ms bis der
 Stapel mit aufgesteckter WIFI Extension wieder reagiert nachdem die
@@ -1204,7 +1214,7 @@ com['packets'].append({
 'doc': ['af', {
 'en':
 """
-Returns informations about the WIFI receive buffer. The WIFI
+Returns informations about the Wi-Fi receive buffer. The Wi-Fi
 receive buffer has a max size of 1500 byte and if data is transfered
 too fast, it might overflow.
 
@@ -1221,7 +1231,7 @@ break between them.
 """,
 'de':
 """
-Gibt Informationen über denn WIFI Empfangsbuffer zurück. Der WIFI
+Gibt Informationen über denn WLAN Empfangsbuffer zurück. Der WLAN
 Empfangsbuffer hat eine maximale Größe von 1500 Byte und falls zu viele
 Daten übertragen werden, kann er überlaufen.
 
@@ -1322,7 +1332,7 @@ com['packets'].append({
 'doc': ['af', {
 'en':
 """
-Sets a long WIFI key (up to 63 chars, at least 8 chars) for WPA encryption.
+Sets a long Wi-Fi key (up to 63 chars, at least 8 chars) for WPA encryption.
 This key will be used
 if the key in :func:`SetWifiEncryption` is set to "-". In the old protocol,
 a payload of size 63 was not possible, so the maximum key length was 50 chars.
@@ -1332,7 +1342,7 @@ this function was added additionally.
 """,
 'de':
 """
-Setzt einen langen WIFI Schlüssel (bis zu 63 Zeichen, mindestens 8 Zeichen) für
+Setzt einen langen WLAN Schlüssel (bis zu 63 Zeichen, mindestens 8 Zeichen) für
 WPA Verschlüsselung. Dieser Schlüssel wird genutzt, wenn der Schlüssel in
 :func:`SetWifiEncryption` auf "-" gesetzt wird. Im alten Protokoll war
 ein Payload der Größe 63 nicht möglich, dadurch wurde die maximale
@@ -1556,11 +1566,7 @@ gesetzt
 com['packets'].append({
 'type': 'function',
 'name': ('SetStackCurrentCallbackThreshold', 'set_stack_current_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [2, 0, 5],
@@ -1607,11 +1613,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetStackCurrentCallbackThreshold', 'get_stack_current_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [2, 0, 5],
@@ -1631,11 +1633,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetStackVoltageCallbackThreshold', 'set_stack_voltage_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [2, 0, 5],
@@ -1682,11 +1680,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetStackVoltageCallbackThreshold', 'get_stack_voltage_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [2, 0, 5],
@@ -1707,11 +1701,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetUSBVoltageCallbackThreshold', 'set_usb_voltage_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [2, 0, 5],
@@ -1758,11 +1748,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetUSBVoltageCallbackThreshold', 'get_usb_voltage_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [2, 0, 5],
@@ -2393,3 +2379,409 @@ Gibt das Authentifizierungsgeheimnis zurück, wie von
 """
 }]
 })
+
+com['packets'].append({
+'type': 'function', 
+'name': ('GetConnectionType', 'get_connection_type'), 
+'elements': [('connection_type', 'uint8', 1, 'out')], 
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+	COM_NONE      = 0,
+	COM_USB       = 1,
+	COM_SPI_STACK = 2,
+	COM_CHIBI     = 3,
+	COM_RS485     = 4,
+	COM_WIFI      = 5,
+	COM_ETHERNET  = 6,
+	COM_WIFI2     = 7,
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('IsWifi2Present', 'is_wifi2_present'), 
+'elements': [('present', 'bool', 1, 'out')], 
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+Returns *true* if a WIFI Extension 2.0 is available to be used by the Master
+Brick.
+""",
+'de':
+"""
+Gibt zurück ob eine WIFI Extension 2.0 zur Nutzung durch den Master Brick
+verfügbar ist.
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('StartWifi2Bootloader', 'start_wifi2_bootloader'), 
+'elements': [('result', 'int8', 1, 'out')], 
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('WriteWifi2Flash', 'write_wifi2_flash'), 
+'elements': [('data', 'uint8', 60, 'in'),
+             ('length', 'uint8', 1, 'in'),
+             ('result', 'int8', 1, 'out')], 
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('ReadWifi2Flash', 'read_wifi2_flash'), 
+'elements': [('length_in', 'uint8', 1, 'in'),
+             ('data', 'uint8', 60, 'out'),
+             ('length_out', 'uint8', 1, 'out')], 
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('SetWifi2AuthenticationSecret', 'set_wifi2_authentication_secret'), 
+'elements': [('secret', 'string', 64, 'in')], 
+'since_firmware': [2, 2, 0],
+'doc': ['af', {
+'en':
+"""
+Sets the WIFI authentication secret. The secret can be a string of up to 64
+characters. An empty string disables the authentication.
+
+See the :ref:`authentication tutorial <tutorial_authentication>` for more
+information.
+
+The secret is stored in the EEPROM and only applied on startup. That means
+you have to restart the Master Brick after configuration.
+
+It is recommended to use the Brick Viewer to set the WIFI authentication secret.
+
+The default value is an empty string (authentication disabled).
+""",
+'de':
+"""
+Setzt das Authentifizierungsgeheimnis. Das Geheimnis ist ein String aus bis zu
+64 Buchstaben. Ein leerer String deaktiviert die Authentifizierung.
+
+Für mehr Informationen zur Authentifizierung siehe das dazugehörige
+:ref:`Tutorial <tutorial_authentication>`.
+
+Das Authentifizierungsgehemnis wird im EEPROM gespeichert und nur beim Start
+angewandt. Das bedeutet der Master Brick muss nach einer Konfiguration neu
+gestartet werden.
+
+Wir empfehlen den Brick Viewer zu nutzen um die Authentifizierung der WIFI 
+Extension einzurichten.
+
+Der Standardwert ist ein leerer String (Authentifizierung deaktiviert).
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('GetWifi2AuthenticationSecret', 'get_wifi2_authentication_secret'), 
+'elements': [('secret', 'string', 64, 'out')], 
+'since_firmware': [2, 2, 0],
+'doc': ['af', {
+'en':
+"""
+Returns the authentication secret as set by :func:`SetWifiAuthenticationSecret`.
+""",
+'de':
+"""
+Gibt das Authentifizierungsgeheimnis zurück, wie von
+:func:`SetWifiAuthenticationSecret` gesetzt.
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('SetWifi2Configuration', 'set_wifi2_configuration'), 
+'elements': [('port', 'uint16', 1, 'in'),
+             ('websocket_port', 'uint16', 1, 'in'),
+             ('website_port', 'uint16', 1, 'in'),
+             ('phy_mode', 'uint8', 1, 'in'),
+             ('sleep_mode', 'uint8', 1, 'in'),
+             ('website', 'uint8', 1, 'in')], 
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('GetWifi2Configuration', 'get_wifi2_configuration'), 
+'elements': [('port', 'uint16', 1, 'out'),
+             ('websocket_port', 'uint16', 1, 'out'),
+             ('website_port', 'uint16', 1, 'out'),
+             ('phy_mode', 'uint8', 1, 'out'),
+             ('sleep_mode', 'uint8', 1, 'out'),
+             ('website', 'uint8', 1, 'out')], 
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+# TODO: Add Status API
+com['packets'].append({
+'type': 'function', 
+'name': ('GetWifi2Status', 'get_wifi2_status'), 
+'elements': [('todo', 'uint8', 1, 'out')], 
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('SetWifi2ClientConfiguration', 'set_wifi2_client_configuration'), 
+'elements': [('enable', 'bool', 1, 'in'),
+             ('ssid', 'string', 32, 'in'),
+             ('ip', 'uint8', 4, 'in'),
+             ('subnet_mask', 'uint8', 4, 'in'),
+             ('gateway', 'uint8', 4, 'in'),
+             ('mac_address', 'uint8', 6, 'in'),
+             ('bssid', 'uint8', 6, 'in')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('GetWifi2ClientConfiguration', 'get_wifi2_client_configuration'), 
+'elements': [('enable', 'bool', 1, 'out'),
+             ('ssid', 'string', 32, 'out'),
+             ('ip', 'uint8', 4, 'out'),
+             ('subnet_mask', 'uint8', 4, 'out'),
+             ('gateway', 'uint8', 4, 'out'),
+             ('mac_address', 'uint8', 6, 'out'),
+             ('bssid', 'uint8', 6, 'out')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('SetWifi2ClientHostname', 'set_wifi2_client_hostname'), 
+'elements': [('hostname', 'string', 32, 'in')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('GetWifi2ClientHostname', 'get_wifi2_client_hostname'), 
+'elements': [('hostname', 'string', 32, 'out')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('SetWifi2ClientPassword', 'set_wifi2_client_password'), 
+'elements': [('password', 'string', 64, 'in')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('GetWifi2ClientPassword', 'get_wifi2_client_password'), 
+'elements': [('password', 'string', 64, 'out')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('SetWifi2APConfiguration', 'set_wifi2_ap_configuration'), 
+'elements': [('enable', 'bool', 1, 'in'),
+             ('ssid', 'string', 32, 'in'),
+             ('ip', 'uint8', 4, 'in'),
+             ('subnet_mask', 'uint8', 4, 'in'),
+             ('gateway', 'uint8', 4, 'in'),
+             ('auth', 'uint8', 1, 'in'),
+             ('hidden', 'bool', 1, 'in'),
+             ('mac_address', 'uint8', 6, 'in')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('GetWifi2APConfiguration', 'get_wifi2_ap_configuration'), 
+'elements': [('enable', 'bool', 1, 'out'),
+             ('ssid', 'string', 32, 'out'),
+             ('ip', 'uint8', 4, 'out'),
+             ('subnet_mask', 'uint8', 4, 'out'),
+             ('gateway', 'uint8', 4, 'out'),
+             ('encryption', 'uint8', 1, 'out'),
+             ('hidden', 'bool', 1, 'out'),
+             ('mac_address', 'uint8', 6, 'out')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('SetWifi2APPassword', 'set_wifi2_ap_password'), 
+'elements': [('password', 'string', 64, 'in')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('GetWifi2APPassword', 'get_wifi2_ap_password'), 
+'elements': [('password', 'string', 64, 'out')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+com['packets'].append({
+'type': 'function', 
+'name': ('SaveWifi2Configuration', 'save_wifi2_configuration'), 
+'elements': [('value', 'uint8', 1, 'out')],
+'since_firmware': [2, 4, 0],
+'doc': ['af', {
+'en':
+"""
+Call this function to actually save configuration
+""",
+'de':
+"""
+"""
+}]
+})
+
+
+com['examples'].append({
+'name': 'Stack Status',
+'functions': [('getter', ('Get Stack Voltage', 'stack voltage'), [(('stack_voltage', 'Stack Voltage'), 'uint16', 1000.0, 'mV', 'V', None)], []),
+              ('getter', ('Get Stack Current', 'stack current'), [(('stack_current', 'Stack Current'), 'uint16', 1000.0, 'mA', 'A', None)], [])]
+})
+

@@ -6,16 +6,22 @@
 
 # Joystick Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 210,
-    'name': ('Joystick', 'joystick', 'Joystick'),
+    'name': ('Joystick', 'joystick', 'Joystick', 'Joystick Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Dual-Axis Joystick with Button',
+    'description': {
+        'en': '2-axis joystick with push-button',
+        'de': '2-Achsen Joystick mit Taster'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -235,11 +241,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetPositionCallbackThreshold', 'set_position_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min_x', 'int16', 1, 'in'),
              ('max_x', 'int16', 1, 'in'),
              ('min_y', 'int16', 1, 'in'),
@@ -288,11 +290,7 @@ Der Standardwert ist ('x', 0, 0, 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetPositionCallbackThreshold', 'get_position_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min_x', 'int16', 1, 'out'),
              ('max_x', 'int16', 1, 'out'),
              ('min_y', 'int16', 1, 'out'),
@@ -314,11 +312,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetAnalogValueCallbackThreshold', 'set_analog_value_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min_x', 'uint16', 1, 'in'),
              ('max_x', 'uint16', 1, 'in'),
              ('min_y', 'uint16', 1, 'in'),
@@ -367,11 +361,7 @@ Der Standardwert ist ('x', 0, 0, 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetAnalogValueCallbackThreshold', 'get_analog_value_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min_x', 'uint16', 1, 'out'),
              ('max_x', 'uint16', 1, 'out'),
              ('min_y', 'uint16', 1, 'out'),
@@ -591,4 +581,23 @@ This callback is triggered when the button is released.
 Dieser Callback wird ausgelöst wenn die Taste losgelassen wird.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Position', 'position'), [(('x', 'Position[X]'), 'int16', None, None, None, None), (('y', 'Position[Y]'), 'int16', None, None, None, None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Pressed', 'pressed'), [], None, 'Pressed'),
+              ('callback', ('Released', 'released'), [], None, 'Released')]
+})
+
+com['examples'].append({
+'name': 'Find Borders',
+'functions': [('debounce_period', 200),
+              ('callback', ('Position Reached', 'position reached'), [(('x', 'Position[X]'), 'int16', None, None, None, None), (('y', 'Position[Y]'), 'int16', None, None, None, None)], None, None),
+              ('callback_threshold', ('Position', 'position'), [], 'o', [(-99, 99), (-99, 99)])],
+'incomplete': True # because of special print logic in callback
 })

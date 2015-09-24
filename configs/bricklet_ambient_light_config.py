@@ -6,16 +6,22 @@
 
 # Ambient Light Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
-    'api_version': [2, 0, 0],
+    'api_version': [2, 0, 1],
     'category': 'Bricklet',
     'device_identifier': 21,
-    'name': ('AmbientLight', 'ambient_light', 'Ambient Light'),
+    'name': ('AmbientLight', 'ambient_light', 'Ambient Light', 'Ambient Light Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing Ambient Light',
+    'description': {
+        'en': 'Measures ambient light up to 900lux',
+        'de': 'Misst Umgebungslicht bis zu 900Lux'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -27,8 +33,8 @@ com['packets'].append({
 'en':
 """
 Returns the illuminance of the ambient light sensor. The value
-has a range of 0 to 9000 and is given in Lux/10, i.e. a value
-of 4500 means that an illuminance of 450 Lux is measured.
+has a range of 0 to 9000 and is given in lux/10, i.e. a value
+of 4500 means that an illuminance of 450lux is measured.
 
 If you want to get the illuminance periodically, it is recommended to use the
 callback :func:`Illuminance` and set the period with 
@@ -38,7 +44,7 @@ callback :func:`Illuminance` and set the period with
 """
 Gibt die Beleuchtungsstärke des Umgebungslichtsensors zurück. Der Wertbereich
 ist von 0 bis 9000 und ist in Lux/10 angegeben, d.h. bei einem Wert von 
-4500 wurde eine Beleuchtungsstärke von 450 Lux gemessen.
+4500 wurde eine Beleuchtungsstärke von 450Lux gemessen.
 
 Wenn die Beleuchtungsstärke periodisch abgefragt werden soll, wird empfohlen
 den Callback :func:`Illuminance` zu nutzen und die Periode mit 
@@ -191,13 +197,9 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetIlluminanceCallbackThreshold', 'set_illuminance_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
-             ('min', 'int16', 1, 'in'),
-             ('max', 'int16', 1, 'in')],
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
+             ('min', 'uint16', 1, 'in'),
+             ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
 'doc': ['ccf', {
 'en':
@@ -242,13 +244,9 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetIlluminanceCallbackThreshold', 'get_illuminance_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
-             ('min', 'int16', 1, 'out'),
-             ('max', 'int16', 1, 'out')],
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
+             ('min', 'uint16', 1, 'out'),
+             ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['ccf', {
 'en':
@@ -266,11 +264,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetAnalogValueCallbackThreshold', 'set_analog_value_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -317,11 +311,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetAnalogValueCallbackThreshold', 'get_analog_value_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -501,4 +491,22 @@ Wenn der Schwellwert erreicht bleibt, wird der Callback mit der Periode, wie
 mit :func:`SetDebouncePeriod` gesetzt, ausgelöst.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Illuminance', 'illuminance'), [(('illuminance', 'Illuminance'), 'uint16', 10.0, 'Lux/10', 'Lux', None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Illuminance', 'illuminance'), [(('illuminance', 'Illuminance'), 'uint16', 10.0, 'Lux/10', 'Lux', None)], None, None),
+              ('callback_period', ('Illuminance', 'illuminance'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 10000),
+              ('callback', ('Illuminance Reached', 'illuminance reached'), [(('illuminance', 'Illuminance'), 'uint16', 10.0, 'Lux/10', 'Lux', None)], None, 'Too bright, close the curtains!'),
+              ('callback_threshold', ('Illuminance', 'illuminance'), [], '>', [(200, 0)])]
 })

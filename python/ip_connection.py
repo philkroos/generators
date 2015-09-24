@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012-2014 Matthias Bolte <matthias@tinkerforge.com>
+# Copyright (C) 2012-2015 Matthias Bolte <matthias@tinkerforge.com>
 # Copyright (C) 2011-2012 Olaf Lüke <olaf@tinkerforge.com>
 #
 # Redistribution and use in source and binary forms of this file,
@@ -520,7 +520,7 @@ class IPConnection:
         self.registered_callbacks[id] = callback
 
     def connect_unlocked(self, is_auto_reconnect):
-        # NOTE: assumes that socket_lock is locked
+        # NOTE: assumes that socket is None and socket_lock is locked
 
         # create callback thread and queue
         if self.callback is None:
@@ -540,14 +540,11 @@ class IPConnection:
 
         # create and connect socket
         try:
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-            self.socket.connect((self.host, self.port))
-            self.socket_id += 1
+            tmp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            tmp.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            tmp.connect((self.host, self.port))
         except:
             def cleanup():
-                self.socket = None
-
                 # end callback thread
                 if not is_auto_reconnect:
                     self.callback.queue.put((IPConnection.QUEUE_EXIT, None))
@@ -559,6 +556,9 @@ class IPConnection:
 
             cleanup()
             raise
+
+        self.socket = tmp
+        self.socket_id += 1
 
         # create disconnect probe thread
         try:
@@ -629,7 +629,7 @@ class IPConnection:
                                  connect_reason, None)))
 
     def disconnect_unlocked(self):
-        # NOTE: assumes that socket_lock is locked
+        # NOTE: assumes that socket is not None and socket_lock is locked
 
         # end disconnect probe thread
         self.disconnect_probe_queue.put(True)
@@ -860,15 +860,30 @@ class IPConnection:
 
     def handle_deserialized_char(self, c):
         if sys.hexversion >= 0x03000000:
-            c = c.decode('ascii')
+            try:
+                # c is a bytes object, try to decode it as ASCII. if it is
+                # not decodable keep it as a bytes object because there is no
+                # other option for this in Python 3
+                c = c.decode('ascii')
+            except:
+                pass
 
         return c
 
     def handle_deserialized_string(self, s):
-        if sys.hexversion >= 0x03000000:
-            s = s.decode('ascii')
+        nul = b'\x00'
 
-        i = s.find(chr(0))
+        if sys.hexversion >= 0x03000000:
+            try:
+                # s is a bytes object, try to decode it as ASCII. if it is
+                # not decodable keep it as a bytes object because there is no
+                # other option for this in Python 3
+                s = s.decode('ascii')
+                nul = '\x00'
+            except:
+                pass
+
+        i = s.find(nul)
         if i >= 0:
             s = s[:i]
 

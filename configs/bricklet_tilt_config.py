@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 239,
-    'name': ('Tilt', 'tilt', 'Tilt'),
+    'name': ('Tilt', 'tilt', 'Tilt', 'Tilt Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing tilt and vibration',
+    'description': {
+        'en': 'Detects inclination of Bricklet (tilt switch open/closed)',
+        'de': 'Erkennt Neigung des Bricklets (Neigungsschalter offen/geschlossen)'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -134,4 +138,17 @@ aufgerufen wenn sich der Status ändert.
 Siehe :func:`GetTiltState` für eine Beschreibung der Zustände.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Tilt State', 'tilt state'), [(('state', 'Tilt State'), 'uint8', None, None, None, None)], [])],
+'incomplete': True # because of special print logic
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('setter', 'Enable Tilt State Callback', [], 'Enable tilt state callback', None),
+              ('callback', ('Tilt State', 'tilt state'), [(('state', 'Tilt State'), 'uint8', None, None, None, None)], None, None)],
+'incomplete': True # because of special print logic in callback
 })

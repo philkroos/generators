@@ -6,16 +6,22 @@
 
 # Line Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 241,
-    'name': ('Line', 'line', 'Line'),
+    'name': ('Line', 'line', 'Line', 'Line Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device that measures reflectivity to allow following a line',
+    'description': {
+        'en': 'Measures reflectivity of a surface',
+        'de': 'Misst Reflektivität einer Oberfläche'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -101,11 +107,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetReflectivityCallbackThreshold', 'set_reflectivity_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -152,11 +154,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetReflectivityCallbackThreshold', 'get_reflectivity_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -279,4 +277,22 @@ Wenn der Schwellwert erreicht bleibt, wird der Callback mit der Periode, wie
 mit :func:`SetDebouncePeriod` gesetzt, ausgelöst.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Reflectivity', 'reflectivity'), [(('reflectivity', 'Reflectivity'), 'uint16', None, None, None, None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Reflectivity', 'reflectivity'), [(('reflectivity', 'Reflectivity'), 'uint16', None, None, None, None)], None, None),
+              ('callback_period', ('Reflectivity', 'reflectivity'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 1000),
+              ('callback', ('Reflectivity Reached', 'reflectivity reached'), [(('reflectivity', 'Reflectivity'), 'uint16', None, None, None, None)], None, None),
+              ('callback_threshold', ('Reflectivity', 'reflectivity'), [], '>', [(2000, 0)])]
 })

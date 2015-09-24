@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 1],
     'category': 'Bricklet',
     'device_identifier': 223,
-    'name': ('IndustrialDigitalIn4', 'industrial_digital_in_4', 'Industrial Digital In 4'),
+    'name': ('IndustrialDigitalIn4', 'industrial_digital_in_4', 'Industrial Digital In 4', 'Industrial Digital In 4 Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling up to 4 optically coupled digital inputs',
+    'description': {
+        'en': '4 galvanically isolated digital inputs',
+        'de': '4 galvanisch getrennte digitale Eingänge'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -398,4 +402,15 @@ Gibt den Flankentyp sowie die Entprellzeit für den ausgewählten Pin zurück,
 wie von :func:`SetEdgeCountConfig` gesetzt.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Value', 'value as bitmask'), [(('value_mask', 'Value Mask'), 'uint16:bitmask:4', None, None, None, None)], [])]
+})
+
+com['examples'].append({
+'name': 'Interrupt',
+'functions': [('callback', ('Interrupt', 'interrupt'), [(('interrupt_mask', 'Interrupt Mask'), 'uint16:bitmask:4', None, None, None, None), (('value_mask', 'Value Mask'), 'uint16:bitmask:4', None, None, None, None)], None, None),
+              ('setter', 'Set Interrupt', [('uint16:bitmask:4', 1 << 0)], 'Enable interrupt on pin 0', None)]
 })

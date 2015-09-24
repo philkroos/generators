@@ -6,16 +6,22 @@
 
 # Sound Intensity Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 238,
-    'name': ('SoundIntensity', 'sound_intensity', 'Sound Intensity'),
+    'name': ('SoundIntensity', 'sound_intensity', 'Sound Intensity', 'Sound Intensity Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing sound intensity',
+    'description': {
+        'en': 'Measures sound intensity',
+        'de': 'Misst Schallintensität'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -29,7 +35,7 @@ com['packets'].append({
 Returns the current sound intensity. The value has a range of
 0 to 4095.
 
-The value corresponds to the `upper envelop <http://en.wikipedia.org/wiki/Envelope_(waves)>`__
+The value corresponds to the `upper envelop <https://en.wikipedia.org/wiki/Envelope_(waves)>`__
 of the signal of the microphone capsule.
 
 If you want to get the intensity periodically, it is recommended to use the
@@ -41,7 +47,7 @@ callback :func:`Intensity` and set the period with
 Gibt die aktuelle Schallintensität zurück. Der Wertebereich
 ist von 0 bis 4095.
 
-Der Wert entspricht der `Hüllkurve <http://de.wikipedia.org/wiki/H%C3%BCllkurvendemodulator>`__
+Der Wert entspricht der `Hüllkurve <https://de.wikipedia.org/wiki/H%C3%BCllkurvendemodulator>`__
 des Signals der Mikrophonkapsel.
 
 Wenn die Schallintensität periodisch abgefragt werden soll, wird empfohlen
@@ -101,11 +107,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetIntensityCallbackThreshold', 'set_intensity_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -152,11 +154,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetIntensityCallbackThreshold', 'get_intensity_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -279,4 +277,22 @@ Wenn der Schwellwert erreicht bleibt, wird der Callback mit der Periode, wie
 mit :func:`SetDebouncePeriod` gesetzt, ausgelöst.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Intensity', 'intensity'), [(('intensity', 'Intensity'), 'uint16', None, None, None, None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Intensity', 'intensity'), [(('intensity', 'Intensity'), 'uint16', None, None, None, None)], None, None),
+              ('callback_period', ('Intensity', 'intensity'), [], 50)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 1000),
+              ('callback', ('Intensity Reached', 'intensity reached'), [(('intensity', 'Intensity'), 'uint16', None, None, None, None)], None, None),
+              ('callback_threshold', ('Intensity', 'intensity'), [], '>', [(2000, 0)])]
 })

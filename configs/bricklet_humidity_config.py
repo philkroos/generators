@@ -6,16 +6,22 @@
 
 # Humidity Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 27,
-    'name': ('Humidity', 'humidity', 'Humidity'),
+    'name': ('Humidity', 'humidity', 'Humidity', 'Humidity Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing Humidity',
+    'description': {
+        'en': 'Measures relative humidity',
+        'de': 'Misst relative Luftfeuchtigkeit'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -189,13 +195,9 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetHumidityCallbackThreshold', 'set_humidity_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
-             ('min', 'int16', 1, 'in'),
-             ('max', 'int16', 1, 'in')],
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
+             ('min', 'uint16', 1, 'in'),
+             ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
 'doc': ['ccf', {
 'en':
@@ -240,13 +242,9 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetHumidityCallbackThreshold', 'get_humidity_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
-             ('min', 'int16', 1, 'out'),
-             ('max', 'int16', 1, 'out')],
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
+             ('min', 'uint16', 1, 'out'),
+             ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['ccf', {
 'en':
@@ -264,11 +262,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetAnalogValueCallbackThreshold', 'set_analog_value_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -315,11 +309,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetAnalogValueCallbackThreshold', 'get_analog_value_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -499,4 +489,22 @@ Wenn der Schwellwert erreicht bleibt, wird der Callback mit der Periode, wie
 mit :func:`SetDebouncePeriod` gesetzt, ausgelöst.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Humidity', 'humidity'), [(('humidity', 'Humidity'), 'uint16', 10.0, '%RH/10', '%RH', None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Humidity', 'humidity'), [(('humidity', 'Humidity'), 'uint16', 10.0, '%RH/10', '%RH', None)], None, None),
+              ('callback_period', ('Humidity', 'humidity'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 10000),
+              ('callback', ('Humidity Reached', 'humidity reached'), [(('humidity', 'Humidity'), 'uint16', 10.0, '%RH/10', '%RH', None)], None, 'Recommended humiditiy for human comfort is 30 to 60 %RH.'),
+              ('callback_threshold', ('Humidity', 'humidity'), [], 'o', [(30, 60)])]
 })

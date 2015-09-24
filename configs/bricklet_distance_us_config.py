@@ -6,16 +6,22 @@
 
 # Distance US Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 229,
-    'name': ('DistanceUS', 'distance_us', 'Distance US'),
+    'name': ('DistanceUS', 'distance_us', 'Distance US', 'Distance US Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing distance via ultrasound',
+    'description': {
+        'en': 'Measures distance between 2cm and 400cm with ultrasound',
+        'de': 'Misst Entfernung zwischen 2cm und 400cm mit Ultraschall'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -104,13 +110,9 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetDistanceCallbackThreshold', 'set_distance_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
-             ('min', 'int16', 1, 'in'),
-             ('max', 'int16', 1, 'in')],
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
+             ('min', 'uint16', 1, 'in'),
+             ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
 'doc': ['ccf', {
 'en':
@@ -155,13 +157,9 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetDistanceCallbackThreshold', 'get_distance_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
-             ('min', 'int16', 1, 'out'),
-             ('max', 'int16', 1, 'out')],
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
+             ('min', 'uint16', 1, 'out'),
+             ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['ccf', {
 'en':
@@ -292,7 +290,7 @@ com['packets'].append({
 'doc': ['af', {
 'en':
 """
-Sets the length of a `moving averaging <http://en.wikipedia.org/wiki/Moving_average>`__ 
+Sets the length of a `moving averaging <https://en.wikipedia.org/wiki/Moving_average>`__
 for the distance value.
 
 Setting the length to 0 will turn the averaging completely off. With less
@@ -304,7 +302,8 @@ The default value is 20.
 """,
 'de':
 """
-Setzt die Länge eines gleitenden Mittelwerts für den Entfernungswert.
+Setzt die Länge eines `gleitenden Mittelwerts <https://de.wikipedia.org/wiki/Gleitender_Mittelwert>`__
+für den Entfernungswert.
 
 Wenn die Länge auf 0 gesetzt wird, ist das Averaging komplett aus. Desto kleiner
 die Länge des Mittelwerts ist, desto mehr Rauschen ist auf den Daten.
@@ -332,4 +331,24 @@ Gibt die Länge des gleitenden Mittelwerts zurück, wie von
 :func:`SetMovingAverage` gesetzt.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Distance Value', 'distance value'), [(('distance', 'Distance Value'), 'uint16', None, None, None, None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+# FIXME: name mismatch here because of a naming inconsistency in the API
+'functions': [('callback', ('Distance', 'distance value'), [(('distance', 'Distance Value'), 'uint16', None, None, None, None)], None, None),
+              ('callback_period', ('Distance', 'distance value'), [], 200)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+# FIXME: name mismatch here because of a naming inconsistency in the API
+'functions': [('debounce_period', 10000),
+              ('callback', ('Distance Reached', 'distance value reached'), [(('distance', 'Distance Value'), 'uint16', None, None, None, None)], None, None),
+              ('callback_threshold', ('Distance', 'distance value'), [], '<', [(200, 0)])]
 })

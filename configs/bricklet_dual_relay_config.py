@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 26,
-    'name': ('DualRelay', 'dual_relay', 'Dual Relay'),
+    'name': ('DualRelay', 'dual_relay', 'Dual Relay', 'Dual Relay Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling two relays',
+    'description': {
+        'en': 'Two relays to switch AC/DC devices',
+        'de': 'Zwei Relais um Gleich- und Wechselstromgeräte zu schalten'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -183,4 +187,14 @@ Setzt den Zustand des selektierten Relais (1 oder 2), *true* bedeutet ein und *f
 Das andere Relais bleibt unangetastet.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('loop_header', 5, 'Turn relays alternating on/off for 10 times with 1 second delay'),
+              ('sleep', 1000, None, None),
+              ('setter', 'Set State', [('bool', True), ('bool', False)], None, None),
+              ('sleep', 1000, None, None),
+              ('setter', 'Set State', [('bool', False), ('bool', True)], None, None),
+              ('loop_footer',)]
 })

@@ -6,16 +6,22 @@
 
 # Rotary Encoder Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 236,
-    'name': ('RotaryEncoder', 'rotary_encoder', 'Rotary Encoder'),
+    'name': ('RotaryEncoder', 'rotary_encoder', 'Rotary Encoder', 'Rotary Encoder Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing Rotary Encoder input',
+    'description': {
+        'en': '360° rotary encoder with push-button',
+        'de': '360° Drehgeber/Drehencoder mit Taster'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -100,11 +106,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetCountCallbackThreshold', 'set_count_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int32', 1, 'in'),
              ('max', 'int32', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -151,11 +153,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetCountCallbackThreshold', 'get_count_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int32', 1, 'out'),
              ('max', 'int32', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -335,4 +333,15 @@ This callback is triggered when the button is released.
 Dieser Callback wird ausgelöst wenn der Taster losgelassen wird.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Count', 'count without reset'), [(('count', 'Count'), 'int32', None, None, None, None)], [('bool', False)])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Count', 'count'), [(('count', 'Count'), 'int32', None, None, None, None)], None, None),
+              ('callback_period', ('Count', 'count'), [], 50)]
 })

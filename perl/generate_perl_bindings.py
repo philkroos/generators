@@ -4,7 +4,7 @@
 """
 Perl Bindings Generator
 Copyright (C) 2013-2014 Ishraq Ibne Ashraf <ishraq@tinkerforge.com>
-Copyright (C) 2014 Matthias Bolte <matthias@tinkerforge.com>
+Copyright (C) 2014-2015 Matthias Bolte <matthias@tinkerforge.com>
 
 generate_perl_bindings.py: Generator for Perl bindings
 
@@ -53,7 +53,7 @@ package Tinkerforge::{1}{2};
         version = common.get_changelog_version(self.get_generator().get_bindings_root_directory())
 
         return package.format(common.gen_text_hash.format(date, *version),
-                              self.get_category(),
+                              self.get_camel_case_category(),
                               self.get_camel_case_name(),
                               self.get_description())
 
@@ -74,7 +74,7 @@ use Tinkerforge::Error;
 
 =item DEVICE_IDENTIFIER
 
-This constant is used to identify a {1} {2}.
+This constant is used to identify a {1}.
 
 The get_identity() subroutine and the CALLBACK_ENUMERATE callback of the
 IP Connection have a device_identifier parameter to specify the Brick's or
@@ -83,7 +83,16 @@ Bricklet's type.
 =cut
 
 use constant DEVICE_IDENTIFIER => {0};
-""".format(self.get_device_identifier(), self.get_display_name(), self.get_category())
+
+=item DEVICE_DISPLAY_NAME
+
+This constant represents the display name of a {1}.
+
+=cut
+
+use constant DEVICE_DISPLAY_NAME => '{1}';
+""".format(self.get_device_identifier(),
+           self.get_long_display_name())
 
     def get_perl_constants(self):
         callbacks = []
@@ -116,14 +125,14 @@ use constant FUNCTION_{0} => {1};"""
         str_constants = '\n'
         str_constant = 'use constant {0}_{1} => {2};\n'
         for constant_group in self.get_constant_groups():
-            for constant_item in constant_group.get_items():
+            for constant in constant_group.get_constants():
                 if constant_group.get_type() == 'char':
-                    value = "'{0}'".format(constant_item.get_value())
+                    value = "'{0}'".format(constant.get_value())
                 else:
-                    value = str(constant_item.get_value())
+                    value = str(constant.get_value())
 
                 str_constants += str_constant.format(constant_group.get_upper_case_name(),
-                                                     constant_item.get_upper_case_name(),
+                                                     constant.get_upper_case_name(),
                                                      value)
 
         return '\n'.join(callbacks) + '\n' + '\n'.join(function_ids) + str_constants + "\n\n=back\n"
@@ -306,7 +315,7 @@ class PerlBindingsGenerator(common.BindingsGenerator):
         return perl_common.PerlElement
 
     def generate(self, device):
-        filename = '{0}{1}.pm'.format(device.get_category(), device.get_camel_case_name())
+        filename = '{0}{1}.pm'.format(device.get_camel_case_category(), device.get_camel_case_name())
 
         pm = open(os.path.join(self.get_bindings_root_directory(), 'bindings', filename), 'wb')
         pm.write(device.get_perl_source())

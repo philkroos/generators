@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 230,
-    'name': ('DualButton', 'dual_button', 'Dual Button'),
+    'name': ('DualButton', 'dual_button', 'Dual Button', 'Dual Button Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device with two buttons and two LEDs',
+    'description': {
+        'en': 'Two tactile buttons with built-in blue LEDs',
+        'de': 'Zwei Taster mit eingebauten blauen LEDs'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -197,4 +201,10 @@ Setzt den Zustand der selektierten LED (0 oder 1).
 Die andere LED bleibt unangetastet.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('State Changed', 'state changed'), [(('button_l', 'Left Button'), 'uint8', None, None, None, None), (('button_r', 'Right Button'), 'uint8', None, None, None, None), (('led_l', None), 'uint8', None, None, None, None), (('led_r', None), 'uint8', None, None, None, None)], None, None)],
+'incomplete': True # because of special print logic in callback
 })

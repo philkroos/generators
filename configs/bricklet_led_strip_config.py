@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 2],
     'category': 'Bricklet',
     'device_identifier': 231,
-    'name': ('LEDStrip', 'led_strip', 'LED Strip'),
+    'name': ('LEDStrip', 'led_strip', 'LED Strip', 'LED Strip Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device to control up to 320 RGB LEDs',
+    'description': {
+        'en': 'Controls up to 320 RGB LEDs',
+        'de': 'Steuert bis zu 320 RGB LEDs'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -191,11 +195,11 @@ com['packets'].append({
 'doc': ['bf', {
 'en':
 """
-Returns the frame duration as set by :func:`SetFrameDuration`.
+Returns the frame duration in ms as set by :func:`SetFrameDuration`.
 """,
 'de':
 """
-Gibt die *frame duration* (Länge des Frames) zurück, wie von
+Gibt die *frame duration* (Länge des Frames) in ms zurück, wie von
 :func:`SetFrameDuration` gesetzt.
 """
 }]
@@ -227,7 +231,8 @@ com['packets'].append({
 'doc': ['c', {
 'en':
 """
-This callback is triggered directly after a new frame is rendered.
+This callback is triggered directly after a new frame is rendered. The
+:word:`parameter` is the number of LEDs in that frame.
 
 You should send the data for the next frame directly after this callback
 was triggered.
@@ -237,6 +242,7 @@ For an explanation of the general approach see :func:`SetRGBValues`.
 'de':
 """
 Dieser Callback wird direkt direkt nachdem ein Frame gerendert wurde ausgelöst.
+Der :word:`parameter` ist die Anzahl der LEDs in diesem Frame.
 
 Die Daten für das nächste Frame sollten direkt nach dem auslösen dieses
 Callbacks übertragen werden.
@@ -374,3 +380,14 @@ Gibt den aktuell genutzten Typ des Chips zurück, wie von
 }]
 })
 
+com['examples'].append({
+'name': 'Simple',
+'incomplete': True # because of array parameters
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('setter', 'Set Frame Duration', [('uint16', 50)], 'Set frame duration to 50ms (20 frames per second)', None),
+              ('callback', ('Frame Rendered', 'frame rendered'), [(('length', 'Length'), 'uint16', None, None, None, None)], None, None)],
+'incomplete': True # because of array parameters and special logic in callback
+})

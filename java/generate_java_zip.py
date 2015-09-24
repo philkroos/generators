@@ -54,7 +54,7 @@ class JavaZipGenerator(common.Generator):
 
         # Copy device examples
         tmp_examples_device_dir = os.path.join(self.tmp_examples_dir,
-                                               device.get_category(),
+                                               device.get_camel_case_category(),
                                                device.get_camel_case_name())
 
         if not os.path.exists(tmp_examples_device_dir):
@@ -71,7 +71,7 @@ class JavaZipGenerator(common.Generator):
             shutil.copy(example[1], self.tmp_examples_dir)
 
         # Copy bindings and readme
-        for filename in released_files:
+        for filename in released_files + ['DeviceFactory.java']:
             shutil.copy(os.path.join(root_dir, 'bindings', filename), self.tmp_source_com_tinkerforge_dir)
 
         shutil.copy(os.path.join(root_dir, 'BrickDaemon.java'),               self.tmp_source_com_tinkerforge_dir)

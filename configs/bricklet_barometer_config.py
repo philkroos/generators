@@ -6,16 +6,22 @@
 
 # Barometer Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Matthias Bolte <matthias@tinkerforge.com>',
     'api_version': [2, 0, 1],
     'category': 'Bricklet',
     'device_identifier': 221,
-    'name': ('Barometer', 'barometer', 'Barometer'),
+    'name': ('Barometer', 'barometer', 'Barometer', 'Barometer Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing air pressure and altitude changes',
+    'description': {
+        'en': 'Measures air pressure and altitude changes',
+        'de': 'Misst Luftdruck und Höhenänderungen'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -174,11 +180,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetAirPressureCallbackThreshold', 'set_air_pressure_callback_threshold'),
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])),
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int32', 1, 'in'),
              ('max', 'int32', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -225,11 +227,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetAirPressureCallbackThreshold', 'get_air_pressure_callback_threshold'),
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])),
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int32', 1, 'out'),
              ('max', 'int32', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -249,11 +247,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetAltitudeCallbackThreshold', 'set_altitude_callback_threshold'),
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])),
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int32', 1, 'in'),
              ('max', 'int32', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -300,11 +294,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetAltitudeCallbackThreshold', 'get_altitude_callback_threshold'),
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])),
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int32', 1, 'out'),
              ('max', 'int32', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -394,8 +384,8 @@ altitude of 0cm. Passing 0 is a shortcut for passing the current air pressure as
 reference.
 
 Well known reference values are the Q codes
-`QNH <http://en.wikipedia.org/wiki/QNH>`__ and
-`QFE <http://en.wikipedia.org/wiki/Mean_sea_level_pressure#Mean_sea_level_pressure>`__
+`QNH <https://en.wikipedia.org/wiki/QNH>`__ and
+`QFE <https://en.wikipedia.org/wiki/Mean_sea_level_pressure#Mean_sea_level_pressure>`__
 used in aviation.
 
 The default value is 1013.25mbar.
@@ -408,8 +398,8 @@ aktuelle Luftdruckwert als Referenz übergeben wird dann gibt die Höhenberechnu
 Referenzluftdruck intern auf den aktuellen Luftdruckwert gesetzt.
 
 Wohl bekannte Referenzluftdruckwerte, die in der Luftfahrt verwendet werden, sind
-`QNH <http://de.wikipedia.org/wiki/Barometrische_H%C3%B6henmessung_in_der_Luftfahrt#QNH>`__ und
-`QFE <http://de.wikipedia.org/wiki/Barometrische_H%C3%B6henmessung_in_der_Luftfahrt#QFE>`__
+`QNH <https://de.wikipedia.org/wiki/Barometrische_H%C3%B6henmessung_in_der_Luftfahrt#QNH>`__ und
+`QFE <https://de.wikipedia.org/wiki/Barometrische_H%C3%B6henmessung_in_der_Luftfahrt#QFE>`__
 aus dem Q-Schlüssel.
 
 Der Standardwert ist 1013,25mbar.
@@ -584,7 +574,7 @@ com['packets'].append({
 Sets the different averaging parameters. It is possible to set
 the length of a normal averaging for the temperature and pressure,
 as well as an additional length of a 
-`moving average <http://en.wikipedia.org/wiki/Moving_average>`__ 
+`moving average <https://en.wikipedia.org/wiki/Moving_average>`__
 for the pressure. The moving average is calculated from the normal 
 averages.  There is no moving average for the temperature.
 
@@ -606,7 +596,7 @@ Setzt die unterschiedlichen Averaging-Parameter (Mittelwertbildung).
 Es ist möglich die Länge des Mittelwerts für Temperatur und
 Luftdruck anzugeben. Zusätzlich gibt kann die Länge für
 einen 
-`gleitenden Mittelwert <http://de.wikipedia.org/wiki/Gleitender_Mittelwert>`__ 
+`gleitenden Mittelwert <https://de.wikipedia.org/wiki/Gleitender_Mittelwert>`__
 für den Luftdruck angegeben werden. Der gleitende Mittelwert wird
 mit den Werten des normalen Mittelwerts berechnet. Es gibt keinen
 gleitenden Mittelwert für die Temperatur.
@@ -646,3 +636,21 @@ gesetzt.
 }]
 })
 
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Air Pressure', 'air pressure'), [(('air_pressure', 'Air Pressure'), 'int32', 1000.0, 'mbar/1000', 'mbar', None)], []),
+              ('getter', ('Get Altitude', 'altitude'), [(('altitude', 'Altitude'), 'int32', 100.0, 'cm', 'm', None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Air Pressure', 'air pressure'), [(('air_pressure', 'Air Pressure'), 'int32', 1000.0, 'mbar/1000', 'mbar', None)], None, None),
+              ('callback_period', ('Air Pressure', 'air pressure'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 10000),
+              ('callback', ('Air Pressure Reached', 'air pressure reached'), [(('air_pressure', 'Air Pressure'), 'int32', 1000.0, 'mbar/1000', 'mbar', None)], None, 'Enjoy the potentially good weather!'),
+              ('callback_threshold', ('Air Pressure', 'air pressure'), [], '>', [(1025, 0)])]
+})

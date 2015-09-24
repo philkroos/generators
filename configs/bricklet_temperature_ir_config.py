@@ -4,18 +4,24 @@
 # with or without modification, are permitted. See the Creative
 # Commons Zero (CC0 1.0) License for more details.
 
-# Temperature-IR Bricklet communication config
+# Temperature IR Bricklet communication config
+
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
 
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 217,
-    'name': ('TemperatureIR', 'temperature_ir', 'Temperature IR'),
+    'name': ('TemperatureIR', 'temperature_ir', 'Temperature IR', 'Temperature IR Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for non-contact temperature sensing',
+    'description': {
+        'en': 'Measures contactless object temperature between -70°C and +380°C',
+        'de': 'Kontaktlose Objekttemperaturmessung zwischen -70°C und +380°C'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -63,7 +69,7 @@ e.g. a value of 3001 means that a temperature of 300.1 °C is measured
 on the surface of the object.
 
 The temperature of different materials is dependent on their `emissivity 
-<http://en.wikipedia.org/wiki/Emissivity>`__. The emissivity of the material
+<https://en.wikipedia.org/wiki/Emissivity>`__. The emissivity of the material
 can be set with :func:`SetEmissivity`.
 
 If you want to get the object temperature periodically, it is recommended 
@@ -79,7 +85,7 @@ ein Wert von 3001 eine gemessene Temperatur von 300,1 °C auf der Oberfläche
 des Objektes.
 
 Die Temperatur von unterschiedlichen Materialien ist abhängig von ihrem `Emissionsgrad
-<http://de.wikipedia.org/wiki/Emissionsgrad>`__. Der Emissionsgrad des Materials kann mit
+<https://de.wikipedia.org/wiki/Emissionsgrad>`__. Der Emissionsgrad des Materials kann mit
 :func:`SetEmissivity` gesetzt werden.
 
 Wenn die Objekttemperatur periodisch abgefragt werden soll, wird empfohlen
@@ -97,7 +103,7 @@ com['packets'].append({
 'doc': ['af', {
 'en':
 """
-Sets the `emissivity <http://en.wikipedia.org/wiki/Emissivity>`__ that is
+Sets the `emissivity <https://en.wikipedia.org/wiki/Emissivity>`__ that is
 used to calculate the surface temperature as returned by 
 :func:`GetObjectTemperature`. 
 
@@ -118,7 +124,7 @@ sensor can handle is 0.1 (value of 6553).
 """,
 'de':
 """
-Setzt den `Emissionsgrad <http://de.wikipedia.org/wiki/Emissionsgrad>`__,
+Setzt den `Emissionsgrad <https://de.wikipedia.org/wiki/Emissionsgrad>`__,
 welcher zur Berechnung der Oberflächentemperatur benutzt wird, wie von
 :func:`GetObjectTemperature` zurückgegeben.
 
@@ -254,11 +260,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetAmbientTemperatureCallbackThreshold', 'set_ambient_temperature_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int16', 1, 'in'),
              ('max', 'int16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -305,11 +307,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetAmbientTemperatureCallbackThreshold', 'get_ambient_temperature_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int16', 1, 'out'),
              ('max', 'int16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -329,11 +327,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetObjectTemperatureCallbackThreshold', 'set_object_temperature_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int16', 1, 'in'),
              ('max', 'int16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -380,11 +374,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetObjectTemperatureCallbackThreshold', 'get_object_temperature_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int16', 1, 'out'),
              ('max', 'int16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -564,4 +554,24 @@ Wenn der Schwellwert erreicht bleibt, wird der Callback mit der Periode, wie
 mit :func:`SetDebouncePeriod` gesetzt, ausgelöst.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Ambient Temperature', 'ambient temperature'), [(('ambient_temperature', 'Ambient Temperature'), 'int16', 10.0, '°C/10', '°C', None)], []),
+              ('getter', ('Get Object Temperature', 'object temperature'), [(('object_temperature', 'Object Temperature'), 'int16', 10.0, '°C/10', '°C', None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Object Temperature', 'object temperature'), [(('temperature', 'Object Temperature'), 'int16', 10.0, '°C/10', '°C', None)], None, None),
+              ('callback_period', ('Object Temperature', 'object temperature'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Water Boiling',
+'functions': [('setter', 'Set Emissivity', [('uint16', 64224)], 'Set emissivity to 0.98 (emissivity of water, 65535 * 0.98 = 64224.299)', None),
+              ('debounce_period', 10000),
+              ('callback', ('Object Temperature Reached', 'object temperature reached'), [(('temperature', 'Object Temperature'), 'int16', 10.0, '°C/10', '°C', None)], None, 'The water is boiling!'),
+              ('callback_threshold', ('Object Temperature', 'object temperature'), [], '>', [(100, 0)])]
 })

@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Brick',
     'device_identifier': 14,
-    'name': ('Servo', 'servo', 'Servo'),
+    'name': ('Servo', 'servo', 'Servo', 'Servo Brick'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling up to seven servos',
+    'description': {
+        'en': 'Drives up to 7 RC Servos with up to 3A',
+        'de': 'Steuert bis zu 7 RC Servos mit bis zu 3A'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['api'] = {
@@ -356,7 +360,7 @@ com['packets'].append({
 Sets the minimum and maximum pulse width of the specified servo in µs.
 
 Usually, servos are controlled with a 
-`PWM <http://en.wikipedia.org/wiki/Pulse-width_modulation>`__, whereby the
+`PWM <https://en.wikipedia.org/wiki/Pulse-width_modulation>`__, whereby the
 length of the pulse controls the position of the servo. Every servo has
 different minimum and maximum pulse widths, these can be specified with
 this function.
@@ -376,7 +380,7 @@ maximum pulse width.
 Setzt die minimale und maximale Pulsweite des angegebenen Servos in µs.
 
 Normalerweise werden Servos mit einer
-`PWM <http://de.wikipedia.org/wiki/Pulsweitenmodulation>`__ angesteuert,
+`PWM <https://de.wikipedia.org/wiki/Pulsweitenmodulation>`__ angesteuert,
 wobei die Länge des Pulses die Position des Servos steuert. Jeder Servo
 hat unterschiedliche minimale und maximale Pulsweiten, diese können mit
 dieser Funktion spezifiziert werden.
@@ -530,7 +534,7 @@ com['packets'].append({
 Sets the period of the specified servo in µs.
 
 Usually, servos are controlled with a 
-`PWM <http://en.wikipedia.org/wiki/Pulse-width_modulation>`__. Different
+`PWM <https://en.wikipedia.org/wiki/Pulse-width_modulation>`__. Different
 servos expect PWMs with different periods. Most servos run well with a 
 period of about 20ms.
 
@@ -548,7 +552,7 @@ The default value is 19.5ms (19500µs).
 Setzt die Periode des angegebenen Servos in µs.
 
 Normalerweise werden Servos mit einer
-`PWM <http://de.wikipedia.org/wiki/Pulsweitenmodulation>`__ angesteuert.
+`PWM <https://de.wikipedia.org/wiki/Pulsweitenmodulation>`__ angesteuert.
 Unterschiedliche Servos erwarten PWMs mit unterschiedlichen Perioden.
 Die meisten Servos werden mit einer Periode von 20ms betrieben.
 
@@ -938,3 +942,43 @@ Gibt *true* zurück wenn der :func:`VelocityReached` Callback aktiviert ist, *fa
 """
 }]
 })
+
+com['examples'].append({
+'name': 'Configuration',
+'functions': [('setter', 'Set Output Voltage', [('uint16', 5500)], 'Configure two servos with voltage 5.5V\nServo 1: Connected to port 0, period of 19.5ms, pulse width of 1 to 2ms\n         and operating angle -100 to 100°\n\nServo 2: Connected to port 5, period of 20ms, pulse width of 0.95 \n         to 1.95ms and operating angle -90 to 90°', None),
+              ('empty',),
+              ('setter', 'Set Degree', [('uint8', 0), ('int16', -10000), ('int16', 10000)], None, None),
+              ('setter', 'Set Pulse Width', [('uint8', 0), ('uint16', 1000), ('uint16', 2000)], None, None),
+              ('setter', 'Set Period', [('uint8', 0), ('uint16', 19500)], None, None),
+              ('setter', 'Set Acceleration', [('uint8', 0), ('uint16', 1000)], None, 'Slow acceleration'),
+              ('setter', 'Set Velocity', [('uint8', 0), ('uint16', 65535)], None, 'Full speed'),
+              ('empty',),
+              ('setter', 'Set Degree', [('uint8', 5), ('int16', -9000), ('int16', 9000)], None, None),
+              ('setter', 'Set Pulse Width', [('uint8', 5), ('uint16', 950), ('uint16', 1950)], None, None),
+              ('setter', 'Set Period', [('uint8', 5), ('uint16', 20000)], None, None),
+              ('setter', 'Set Acceleration', [('uint8', 5), ('uint16', 65535)], None, 'Full acceleration'),
+              ('setter', 'Set Velocity', [('uint8', 5), ('uint16', 65535)], None, 'Full speed'),
+              ('empty',),
+              ('setter', 'Set Position', [('uint8', 0), ('int16', 10000)], None, 'Set to most right position'),
+              ('setter', 'Enable', [('uint8', 0)], None, None),
+              ('empty',),
+              ('setter', 'Set Position', [('uint8', 5), ('int16', -9000)], None, 'Set to most left position'),
+              ('setter', 'Enable', [('uint8', 5)], None, None)],
+'cleanups': [('setter', 'Disable', [('uint8', 0)], None, None),
+             ('setter', 'Disable', [('uint8', 5)], None, None)]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Position Reached', 'position reached'), [(('servo_num', 'Servo Number'), 'uint8', None, None, None, None), (('position', 'Position'), 'int16', None, None, None, None)], 'Use position reached callback to swing back and forth', None),
+              ('setter', 'Enable Position Reached Callback', [], 'Enable position reached callback', None),
+              ('setter', 'Set Velocity', [('uint8', 0), ('uint16', 10000)], 'Set velocity to 100°/s. This has to be smaller or equal to the\nmaximum velocity of the servo you are using, otherwise the position\nreached callback will be called too early', None),
+              ('setter', 'Set Position', [('uint8', 0), ('int16', 9000)], None, None),
+              ('setter', 'Enable', [('uint8', 0)], None, None)],
+'cleanups': [('setter', 'Disable', [('uint8', 0)], None, None)],
+'incomplete': True # because of special ping/pong logic in callback
+})
+
+#com['examples'].append({
+#'name': 'PWM Generator'
+#})

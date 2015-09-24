@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 1],
     'category': 'Bricklet',
     'device_identifier': 235,
-    'name': ('RemoteSwitch', 'remote_switch', 'Remote Switch'),
+    'name': ('RemoteSwitch', 'remote_switch', 'Remote Switch', 'Remote Switch Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device that controls mains switches remotely',
+    'description': {
+        'en': 'Controls remote mains switches',
+        'de': 'Steuert Funksteckdosen'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -268,4 +272,9 @@ Eine detaillierte Beschreibung wie man den System- und Gerätecode herausfinden
 kann gibt es :ref:`hier <remote_switch_bricklet_type_c_system_and_device_code>`.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Switch Socket',
+'functions': [('setter', 'Switch Socket A', [('uint8', 17), ('uint8', 1), ('uint8:constant', 1)], 'Switch on a type A socket with house code 17 and receiver code 1.\nHouse code 17 is 10001 in binary (least-significant bit first)\nand means that the DIP switches 1 and 5 are on and 2-4 are off.\nReceiver code 1 is 10000 in binary (least-significant bit first)\nand means that the DIP switch A is on and B-E are off.', None)]
 })

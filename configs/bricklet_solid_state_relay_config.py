@@ -4,18 +4,22 @@
 # with or without modification, are permitted. See the Creative
 # Commons Zero (CC0 1.0) License for more details.
 
-# Dual Relay Bricklet communication config
+# Solid State Relay Bricklet communication config
 
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 244,
-    'name': ('SolidStateRelay', 'solid_state_relay', 'Solid State Relay'),
+    'name': ('SolidStateRelay', 'solid_state_relay', 'Solid State Relay', 'Solid State Relay Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling AC and DC Solid State Relays',
+    'description': {
+        'en': 'Controls AC and DC Solid State Relays',
+        'de': 'Schaltet AC und DC Halbleiterrelais (Solid State Relais)'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -38,7 +42,7 @@ Setzt den Zustand des Relais, *true* bedeutet ein und *false* aus.
 
 Laufende Monoflop Timer werden überschrieben wenn diese Funktion aufgerufen wird.
 
-Der Standardwert ist *false*, *false*.
+Der Standardwert ist *false*.
 """
 }]
 })
@@ -147,4 +151,14 @@ Der Parameter ist der aktuellen Zustand des Relais
 (der Zustand nach dem Monoflop).
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('loop_header', 5, 'Turn relay on/off for 10 times with 1 second delay'),
+              ('sleep', 1000, None, None),
+              ('setter', 'Set State', [('bool', True)], None, None),
+              ('sleep', 1000, None, None),
+              ('setter', 'Set State', [('bool', False)], None, None),
+              ('loop_footer',)]
 })

@@ -32,10 +32,10 @@ import common
 
 class ShellDevice(common.Device):
     def get_shell_class_name(self):
-        return self.get_camel_case_name() + self.get_category()
+        return self.get_camel_case_name() + self.get_camel_case_category()
 
     def get_shell_device_name(self):
-        return self.get_dash_name() + '-' + self.get_category().lower()
+        return self.get_dash_name() + '-' + self.get_dash_category()
 
 class ShellPacket(common.Packet):
     def get_shell_parameter_list(self):
@@ -88,17 +88,35 @@ class ShellElement(common.Element):
         'uint64': 'convert_int',
         'float':  'float',
         'bool':   'convert_bool',
-        'char':   'check_char',
+        'char':   'create_char_converter(ctx)',
         'string': 'string'
     }
 
-    def get_shell_type(self):
+    shell_default_values = {
+        'int8':   '0',
+        'uint8':  '0',
+        'int16':  '0',
+        'uint16': '0',
+        'int32':  '0',
+        'uint32': '0',
+        'int64':  '0',
+        'uint64': '0',
+        'float':  '0.0',
+        'bool':   'False',
+        'char':   "'\\0'",
+        'string': 'None'
+    }
+
+    def get_shell_type(self, for_doc=False):
         t = ShellElement.shell_types[self.get_type()]
 
         if self.get_cardinality() == 1 or t == 'string':
             return t
 
-        return ','.join([t]*self.get_cardinality())
+        if for_doc and self.get_cardinality() > 16:
+            return '{0},{0},..{1}x..,{0},{0}'.format(t, self.get_cardinality() - 4)
+        else:
+            return ','.join([t]*self.get_cardinality())
 
     def get_shell_struct_format(self):
         f = ShellElement.shell_struct_formats[self.get_type()]
@@ -115,8 +133,8 @@ class ShellElement(common.Element):
         if self.get_constant_group() is not None:
             symbols = []
 
-            for constant_item in self.get_constant_group().get_items():
-                symbols.append('{0}: {1}'.format(constant_item.get_dash_name(), constant_item.get_value()))
+            for constant in self.get_constant_group().get_constants():
+                symbols.append('{0}: {1}'.format(constant.get_dash_name(), constant.get_value()))
 
             symbols_doc = ' (' + ', '.join(symbols) + ')'
 
@@ -133,24 +151,25 @@ class ShellElement(common.Element):
         return help
 
     def get_shell_type_converter(self):
-        t = ShellElement.shell_type_converters[self.get_type()]
+        type_converter = ShellElement.shell_type_converters[self.get_type()]
+        default_value = ShellElement.shell_default_values[self.get_type()]
 
-        if self.get_constant_group() is not None:
+        if self.get_constant_group() != None:
             symbols = {}
 
-            for constant_item in self.get_constant_group().get_items():
-                symbols[constant_item.get_dash_name()] = constant_item.get_value()
+            for constant in self.get_constant_group().get_constants():
+                symbols[constant.get_dash_name()] = constant.get_value()
 
-            if self.get_cardinality() > 1 and t != 'string':
-                return 'create_array_converter(ctx, create_symbol_converter(ctx, {0}, {1}), {2})'.format(t, symbols, self.get_cardinality())
-            elif t == 'string':
-                return 'create_string_checker(create_symbol_converter(ctx, str, {0}), {1})'.format(symbols, self.get_cardinality())
+            if self.get_cardinality() > 1 and type_converter != 'string':
+                return 'create_array_converter(ctx, create_symbol_converter(ctx, {0}, {1}), {2}, {3})'.format(type_converter, symbols, default_value, self.get_cardinality())
+            elif type_converter == 'string':
+                return 'create_string_converter(ctx, create_symbol_converter(ctx, str, {0}), {1})'.format(symbols, self.get_cardinality())
             else:
-                return 'create_symbol_converter(ctx, {0}, {1})'.format(t, symbols)
+                return 'create_symbol_converter(ctx, {0}, {1})'.format(type_converter, symbols)
         else:
-            if self.get_cardinality() > 1 and t != 'string':
-                return 'create_array_converter(ctx, {0}, {1})'.format(t, self.get_cardinality())
-            elif t == 'string':
-                return 'create_string_checker(str, {0})'.format(self.get_cardinality())
+            if self.get_cardinality() > 1 and type_converter != 'string':
+                return 'create_array_converter(ctx, {0}, {1}, {2})'.format(type_converter, default_value, self.get_cardinality())
+            elif type_converter == 'string':
+                return 'create_string_converter(ctx, str, {0})'.format(self.get_cardinality())
             else:
-                return t
+                return type_converter

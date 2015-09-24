@@ -6,16 +6,22 @@
 
 # Moisture Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 232,
-    'name': ('Moisture', 'moisture', 'Moisture'),
+    'name': ('Moisture', 'moisture', 'Moisture', 'Moisture Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for sensing Moisture',
+    'description': {
+        'en': 'Measures soil moisture',
+        'de': 'Misst Erdfeuchtigkeit'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -98,11 +104,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetMoistureCallbackThreshold', 'set_moisture_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -149,11 +151,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetMoistureCallbackThreshold', 'get_moisture_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -286,7 +284,7 @@ com['packets'].append({
 'doc': ['af', {
 'en':
 """
-Sets the length of a `moving averaging <http://en.wikipedia.org/wiki/Moving_average>`__ 
+Sets the length of a `moving averaging <https://en.wikipedia.org/wiki/Moving_average>`__
 for the moisture value.
 
 Setting the length to 0 will turn the averaging completely off. With less
@@ -298,7 +296,8 @@ The default value is 100.
 """,
 'de':
 """
-Setzt die Länge eines gleitenden Mittelwerts für den Feuchtigkeitswert.
+Setzt die Länge eines `gleitenden Mittelwerts <https://de.wikipedia.org/wiki/Gleitender_Mittelwert>`__
+für den Feuchtigkeitswert.
 
 Wenn die Länge auf 0 gesetzt wird, ist das Averaging komplett aus. Desto kleiner
 die Länge des Mittelwerts ist, desto mehr Rauschen ist auf den Daten.
@@ -326,4 +325,24 @@ Gibt die Länge des gleitenden Mittelwerts zurück, wie von
 :func:`SetMovingAverage` gesetzt.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Moisture Value', 'moisture value'), [(('moisture', 'Moisture Value'), 'uint16', None, None, None, None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+# FIXME: name mismatch here because of a naming inconsistency in the API
+'functions': [('callback', ('Moisture', 'moisture value'), [(('moisture', 'Moisture Value'), 'uint16', None, None, None, None)], None, None),
+              ('callback_period', ('Moisture', 'moisture value'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+# FIXME: name mismatch here because of a naming inconsistency in the API
+'functions': [('debounce_period', 1000),
+              ('callback', ('Moisture Reached', 'moisture value reached'), [(('moisture', 'Moisture Value'), 'uint16', None, None, None, None)], None, None),
+              ('callback_threshold', ('Moisture', 'moisture value'), [], '>', [(200, 0)])]
 })

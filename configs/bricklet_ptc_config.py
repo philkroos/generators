@@ -6,16 +6,22 @@
 
 # PTC Bricklet communication config
 
+from commonconstants import THRESHOLD_OPTION_CONSTANTS
+
 com = {
     'author': 'Olaf Lüke <olaf@tinkerforge.com>',
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 226,
-    'name': ('PTC', 'ptc', 'PTC'),
+    'name': ('PTC', 'ptc', 'PTC', 'PTC Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for reading temperatures from Pt100 or Pt1000 sensors',
+    'description': {
+        'en': 'Reads temperatures from Pt100 und Pt1000 sensors',
+        'de': 'Liest Temperaturen von Pt100 und Pt1000 Sensoren'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -179,11 +185,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetTemperatureCallbackThreshold', 'set_temperature_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int32', 1, 'in'),
              ('max', 'int32', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -230,11 +232,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetTemperatureCallbackThreshold', 'get_temperature_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'int32', 1, 'out'),
              ('max', 'int32', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -254,11 +252,7 @@ gesetzt.
 com['packets'].append({
 'type': 'function',
 'name': ('SetResistanceCallbackThreshold', 'set_resistance_callback_threshold'), 
-'elements': [('option', 'char', 1, 'in', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                  ('Outside', 'outside', 'o'),
-                                                                                  ('Inside', 'inside', 'i'),
-                                                                                  ('Smaller', 'smaller', '<'),
-                                                                                  ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'in', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'in'),
              ('max', 'uint16', 1, 'in')],
 'since_firmware': [1, 0, 0],
@@ -305,11 +299,7 @@ Der Standardwert ist ('x', 0, 0).
 com['packets'].append({
 'type': 'function',
 'name': ('GetResistanceCallbackThreshold', 'get_resistance_callback_threshold'), 
-'elements': [('option', 'char', 1, 'out', ('ThresholdOption', 'threshold_option', [('Off', 'off', 'x'),
-                                                                                   ('Outside', 'outside', 'o'),
-                                                                                   ('Inside', 'inside', 'i'),
-                                                                                   ('Smaller', 'smaller', '<'),
-                                                                                   ('Greater', 'greater', '>')])), 
+'elements': [('option', 'char', 1, 'out', THRESHOLD_OPTION_CONSTANTS),
              ('min', 'uint16', 1, 'out'),
              ('max', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -609,4 +599,22 @@ Returns the wire mode as set by :func:`SetWireMode`
 Gibt die Leiter-Konfiguration zurück, wie von :func:`SetWireMode` gesetzt.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('getter', ('Get Temperature', 'temperature'), [(('temperature', 'Temperature'), 'int32', 100.0, '°C/100', '°C', None)], [])]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Temperature', 'temperature'), [(('temperature', 'Temperature'), 'int32', 100.0, '°C/100', '°C', None)], None, None),
+              ('callback_period', ('Temperature', 'temperature'), [], 1000)]
+})
+
+com['examples'].append({
+'name': 'Threshold',
+'functions': [('debounce_period', 10000),
+              ('callback', ('Temperature Reached', 'temperature reached'), [(('temperature', 'Temperature'), 'int32', 100.0, '°C/100', '°C', None)], None, None),
+              ('callback_threshold', ('Temperature', 'temperature'), [], '>', [(30, 0)])]
 })

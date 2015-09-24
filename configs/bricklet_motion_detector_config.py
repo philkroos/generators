@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 233,
-    'name': ('MotionDetector', 'motion_detector', 'Motion Detector'),
+    'name': ('MotionDetector', 'motion_detector', 'Motion Detector', 'Motion Detector Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device that reads out PIR motion detector',
+    'description': {
+        'en': 'Passive infrared (PIR) motion sensor, 7m range',
+        'de': 'Passiver Infrarot (PIR) Bewegungssensor, 7m Reichweite'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -84,4 +88,10 @@ beendet ist. Wenn dieser Callback aufgerufen wurde kann wieder
 eine weitere Bewegung erkannt werden nach ungefähr 2 Sekunden.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Callback',
+'functions': [('callback', ('Motion Detected', 'motion detected'), [], None, 'Motion Detected'),
+              ('callback', ('Detection Cycle Ended', 'detection cycle ended'), [], None, 'Detection Cycle Ended (next detection possible in ~3 seconds)')]
 })

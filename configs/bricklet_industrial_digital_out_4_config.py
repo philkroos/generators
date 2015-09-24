@@ -11,11 +11,15 @@ com = {
     'api_version': [2, 0, 0],
     'category': 'Bricklet',
     'device_identifier': 224,
-    'name': ('IndustrialDigitalOut4', 'industrial_digital_out_4', 'Industrial Digital Out 4'),
+    'name': ('IndustrialDigitalOut4', 'industrial_digital_out_4', 'Industrial Digital Out 4', 'Industrial Digital Out 4 Bricklet'),
     'manufacturer': 'Tinkerforge',
-    'description': 'Device for controlling up to 4 optically coupled digital outputs',
+    'description': {
+        'en': '4 galvanically isolated digital outputs',
+        'de': '4 galvanisch getrennte digitale Ausgänge'
+    },
     'released': True,
-    'packets': []
+    'packets': [],
+    'examples': []
 }
 
 com['packets'].append({
@@ -310,4 +314,18 @@ Gruppe. Element 1 in der Gruppe bekommt Pins 0-3,
 Element 2 Pins 4-7, Element 3 Pins 8-11 und Element 4 Pins 12-15.
 """
 }]
+})
+
+com['examples'].append({
+'name': 'Simple',
+'functions': [('loop_header', 10, 'Turn pins alternating high/low for 10 times with 100ms delay'),
+              ('sleep', 100, None, None),
+              ('setter', 'Set Value', [('uint16:bitmask:4', 1 << 0)], None, None),
+              ('sleep', 100, None, None),
+              ('setter', 'Set Value', [('uint16:bitmask:4', 1 << 1)], None, None),
+              ('sleep', 100, None, None),
+              ('setter', 'Set Value', [('uint16:bitmask:4', 1 << 2)], None, None),
+              ('sleep', 100, None, None),
+              ('setter', 'Set Value', [('uint16:bitmask:4', 1 << 3)], None, None),
+              ('loop_footer',)]
 })
