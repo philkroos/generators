@@ -177,7 +177,8 @@ packets.append({
 packets.append({
 'type': 'function',
 'name': ('VisionModuleStart', 'vision_module_start'),
-'elements': [('id', id_t, 1, 'in'),
+'elements': [('name', string_t, 1, 'in'),
+             ('id', id_t, 1, 'in'),
              ('result', result_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
