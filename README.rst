@@ -47,3 +47,9 @@ If you want to generate the documentation as well, you have to clone **all**
 Brick gits and **all** Bricklet gits in parallel to the generators git.
 Otherwise the ``generate_all.py`` and ``copy_all.py`` scripts can't find the
 examples that are used in the documentation.
+
+If you generate the bindings to the red-brick-apid and want to enable support
+of the Tinkervision subsystem, you have to set the environment variable
+WITH_TINKERVISION::
+
+  WITH_TINKERVISION=1 python generate_all.py

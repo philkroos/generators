@@ -663,6 +663,12 @@ def generate(bindings_root_directory, language, generator_class):
     configs.remove('brick_commonconfig.py')
     configs.remove('bricklet_commonconfig.py')
 
+    if (os.environ.get('WITH_TINKERVISION')):
+        configs.remove('brick_red_config.py')
+        print('--> Generating bindings with Tinkervision-support')
+    else:
+        configs.remove('brick_red_with_vision_config.py')
+
     common_device_packets = copy.deepcopy(__import__('device_commonconfig').common_packets)
     common_brick_packets = copy.deepcopy(__import__('brick_commonconfig').common_packets)
     common_bricklet_packets = copy.deepcopy(__import__('bricklet_commonconfig').common_packets)
