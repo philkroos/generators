@@ -663,12 +663,6 @@ def generate(bindings_root_directory, language, generator_class):
     configs.remove('brick_commonconfig.py')
     configs.remove('bricklet_commonconfig.py')
 
-    if (os.environ.get('WITH_TINKERVISION')):
-        configs.remove('brick_red_config.py')
-        print('--> Generating bindings with Tinkervision-support')
-    else:
-        configs.remove('brick_red_with_vision_config.py')
-
     common_device_packets = copy.deepcopy(__import__('device_commonconfig').common_packets)
     common_brick_packets = copy.deepcopy(__import__('brick_commonconfig').common_packets)
     common_bricklet_packets = copy.deepcopy(__import__('bricklet_commonconfig').common_packets)
@@ -704,6 +698,9 @@ def generate(bindings_root_directory, language, generator_class):
                         common_packet['to_be_removed'] = True
 
                 return filter(lambda x: 'to_be_removed' not in x, common_packets)
+
+            if 'brick_red_config.py' == config and os.environ.get('WITH_TINKERVISION'):
+                com['packets'].extend(copy.deepcopy(__import__("brick_red_tinkervision").packets))
 
             if 'brick_' in config and 'common_included' not in com:
                 common_packets = copy.deepcopy(common_device_packets) + copy.deepcopy(common_brick_packets)
