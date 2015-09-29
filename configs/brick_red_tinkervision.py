@@ -10,6 +10,7 @@ packets = []
 
 id_t = 'int8'
 result_t = 'int16'
+scene_t = 'int16'
 parameter_t = 'int16'
 size_t = 'uint16'
 value_t = 'uint16'
@@ -144,8 +145,10 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionPauseID', 'vision_pause_id'),
+'name': ('VisionParameterSet', 'vision_parameter_set'),
 'elements': [('id', id_t, 1, 'in'),
+             ('parameter', string_t, 16, 'in'),
+             ('value', parameter_t, 1, 'in'),
              ('result', result_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
@@ -160,8 +163,10 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionRestartID', 'vision_restart_id'),
+'name': ('VisionParameterGet', 'vision_parameter_get'),
 'elements': [('id', id_t, 1, 'in'),
+             ('parameter', string_t, 16, 'in'),
+             ('value', parameter_t, 1, 'out'),
              ('result', result_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
@@ -177,8 +182,8 @@ packets.append({
 packets.append({
 'type': 'function',
 'name': ('VisionModuleStart', 'vision_module_start'),
-'elements': [('name', string_t, 1, 'in'),
-             ('id', id_t, 1, 'in'),
+'elements': [('id', id_t, 1, 'in'),
+             ('name', string_t, 16, 'in'),
              ('result', result_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
@@ -209,10 +214,8 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionParameterGet', 'vision_parameter_get'),
+'name': ('VisionModuleRestart', 'vision_module_restart'),
 'elements': [('id', id_t, 1, 'in'),
-             ('parameter', string_t, 1, 'in'),
-             ('value', parameter_t, 1, 'out'),
              ('result', result_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
@@ -227,10 +230,58 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionParameterSet', 'vision_parameter_set'),
+'name': ('VisionModuleRemove', 'vision_module_remove'),
 'elements': [('id', id_t, 1, 'in'),
-             ('parameter', string_t, 1, 'in'),
-             ('value', parameter_t, 1, 'in'),
+             ('result', result_t, 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionSceneStart', 'vision_scene_start'),
+'elements': [('module_id', id_t, 1, 'in'),
+             ('scene_id', scene_t, 1, 'out'),
+             ('result', result_t, 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionSceneAdd', 'vision_scene_add'),
+'elements': [('scene_id', scene_t, 1, 'in'),
+             ('module_id', id_t, 1, 'in'),
+             ('result', result_t, 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionSceneRemove', 'vision_scene_remove'),
+'elements': [('scene_id', scene_t, 1, 'in'),
              ('result', result_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
