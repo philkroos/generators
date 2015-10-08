@@ -130,21 +130,6 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionQuit', 'vision_quit'),
-'elements': [('result', result_t, 1, 'out')],
-'since_firmware': [1, 0, 0],
-'doc': ['af', {
-'en':
-"""
-""",
-'de':
-"""
-"""
-}]
-})
-
-packets.append({
-'type': 'function',
 'name': ('VisionParameterSet', 'vision_parameter_set'),
 'elements': [('id', id_t, 1, 'in'),
              ('parameter', string_t, 16, 'in'),
