@@ -296,40 +296,7 @@ packets.append({
 
 packets.append({
 'type': 'callback',
-'name': ('VisionValue', 'vision_value'),
-'elements': [('id', id_t, 1, 'out'),
-             ('value', value_t, 1, 'out')],
-'since_firmware': [1, 0, 0],
-'doc': ['c', {
-'en':
-"""
-""",
-'de':
-"""
-"""
-}]
-})
-
-packets.append({
-'type': 'callback',
-'name': ('VisionPoint', 'vision_point'),
-'elements': [('id', id_t, 1, 'out'),
-             ('x', coord_t, 1, 'out'),
-             ('y', coord_t, 1, 'out')],
-'since_firmware': [1, 0, 0],
-'doc': ['c', {
-'en':
-"""
-""",
-'de':
-"""
-"""
-}]
-})
-
-packets.append({
-'type': 'callback',
-'name': ('VisionRectangle', 'vision_rectangle'),
+'name': ('VisionLocation', 'vision_location'),
 'elements': [('id', id_t, 1, 'out'),
              ('x', coord_t, 1, 'out'),
              ('y', coord_t, 1, 'out'),
