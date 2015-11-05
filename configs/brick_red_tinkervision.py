@@ -11,12 +11,13 @@ packets = []
 id_t = 'int8'
 result_t = 'int16'
 scene_t = 'int16'
-parameter_t = 'int16'
+parameter_t = 'int32'
 size_t = 'uint16'
-value_t = 'uint16'
-coord_t = 'uint16'
-big_t = 'uint32'
+value_t = 'int32'
+time_t = 'uint32'
 string_t = 'string'
+# This must match tv::TV_CHAR_ARRAY_SIZE, e.g. size(api.c:VisionString)
+string_size = 24;
 
 packets.append({
 'type': 'function',
@@ -35,7 +36,7 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionPreselectFramesize', 'vision_preselect_framesize'),
+'name': ('VisionSetFramesize', 'vision_set_framesize'),
 'elements': [('width', size_t, 1, 'in'),
              ('height', size_t, 1, 'in'),
              ('result', result_t, 1, 'out')],
@@ -68,8 +69,24 @@ packets.append({
 packets.append({
 'type': 'function',
 'name': ('VisionSetLatency', 'vision_set_latency'),
-'elements': [('milliseconds', big_t, 1, 'in'),
+'elements': [('milliseconds', time_t, 1, 'in'),
              ('result', result_t, 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionGetInvFramerate', 'vision_get_inv_framerate'),
+'elements': [('result', result_t, 1, 'out'),
+             ('milliseconds', time_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
 'en':
@@ -100,7 +117,7 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionPause', 'vision_pause'),
+'name': ('VisionStop', 'vision_stop'),
 'elements': [('result', result_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
@@ -132,7 +149,7 @@ packets.append({
 'type': 'function',
 'name': ('VisionParameterSet', 'vision_parameter_set'),
 'elements': [('id', id_t, 1, 'in'),
-             ('parameter', string_t, 16, 'in'),
+             ('parameter', string_t, string_size, 'in'),
              ('value', parameter_t, 1, 'in'),
              ('result', result_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
@@ -150,9 +167,9 @@ packets.append({
 'type': 'function',
 'name': ('VisionParameterGet', 'vision_parameter_get'),
 'elements': [('id', id_t, 1, 'in'),
-             ('parameter', string_t, 16, 'in'),
-             ('value', parameter_t, 1, 'out'),
-             ('result', result_t, 1, 'out')],
+             ('parameter', string_t, string_size, 'in'),
+             ('result', result_t, 1, 'out'),
+             ('value', parameter_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
 'en':
@@ -167,9 +184,9 @@ packets.append({
 packets.append({
 'type': 'function',
 'name': ('VisionModuleStart', 'vision_module_start'),
-'elements': [('name', string_t, 16, 'in'),
-             ('id', id_t, 1, 'out'),
-             ('result', result_t, 1, 'out')],
+'elements': [('name', string_t, string_size, 'in'),
+             ('result', result_t, 1, 'out'),
+             ('id', id_t, 1, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
 'en':
@@ -231,10 +248,182 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionSceneStart', 'vision_scene_start'),
+'name': ('VisionModuleGetName', 'vision_module_get_name'),
+'elements': [('id', id_t, 1, 'in'),
+             ('result', result_t, 1, 'out'),
+             ('name', string_t, string_size, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionLibsCount', 'vision_libs_count'),
+'elements': [('result', result_t, 1, 'out'),
+             ('count', size_t, 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionLibNamePath', 'vision_lib_name_path'),
+'elements': [('number', size_t, 1, 'in'),
+             ('result', result_t, 1, 'out'),
+             ('name', string_t, string_size, 'out'),
+             ('path', string_t, string_size, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionLibParameterCount', 'vision_lib_parameter_count'),
+'elements': [('lib', string_t, string_size, 'in'),
+             ('result', result_t, 1, 'out'),
+             ('count', size_t, 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionLibParameterDescribe', 'vision_lib_parameter_describe'),
+'elements': [('lib', string_t, string_size, 'in'),
+             ('count', size_t, 1, 'in'),
+             ('name', string_t, string_size, 'in'),
+             ('result', result_t, 1, 'out'),
+             ('min', parameter_t, 1, 'out'),
+             ('max', parameter_t, 1, 'out'),
+             ('default', parameter_t, 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionLibUserLoadPath', 'vision_lib_user_load_path'),
+'elements': [('result', result_t, 1, 'out'),
+             ('path', string_t, string_size, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionLibSystemLoadPath', 'vision_lib_system_load_path'),
+'elements': [('result', result_t, 1, 'out'),
+             ('path', string_t, string_size, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionSetLibUserLoadPath', 'vision_set_lib_user_load_path'),
+'elements': [('result', result_t, 1, 'out'),
+             ('path', string_t, string_size, 'in')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionRemoveAllModules', 'vision_remove_all_modules'),
+'elements': [('result', result_t, 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionLibUserLoadPath', 'vision_lib_user_load_path'),
+'elements': [('result', result_t, 1, 'out'),
+             ('path', string_t, string_size, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionModuleResult', 'vision_module_result'),
 'elements': [('module_id', id_t, 1, 'in'),
-             ('scene_id', scene_t, 1, 'out'),
-             ('result', result_t, 1, 'out')],
+             ('result', result_t, 1, 'out'),
+             ('x', value_t, 1, 'out'),
+             ('y', value_t, 1, 'out'),
+             ('width', value_t, 1, 'out'),
+             ('height', value_t, 1, 'out'),
+             ('string', string_t, string_size, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['af', {
 'en':
@@ -281,12 +470,30 @@ packets.append({
 
 packets.append({
 'type': 'callback',
-'name': ('VisionLocation', 'vision_location'),
+'name': ('VisionModule', 'vision_module'),
 'elements': [('id', id_t, 1, 'out'),
-             ('x', coord_t, 1, 'out'),
-             ('y', coord_t, 1, 'out'),
-             ('width', coord_t, 1, 'out'),
-             ('height', coord_t, 1, 'out')],
+             ('x', value_t, 1, 'out'),
+             ('y', value_t, 1, 'out'),
+             ('width', value_t, 1, 'out'),
+             ('height', value_t, 1, 'out'),
+             ('string', string_t, string_size, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['c', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'callback',
+'name': ('VisionLibraries', 'vision_libraries'),
+'elements': [('name', string_t, string_size, 'out'),
+             ('path', string_t, string_size, 'out'),
+             ('status', string_t, string_size, 'out')],
 'since_firmware': [1, 0, 0],
 'doc': ['c', {
 'en':
