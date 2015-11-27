@@ -400,22 +400,6 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionLibUserLoadPath', 'vision_lib_user_load_path'),
-'elements': [('result', result_t, 1, 'out'),
-             ('path', string_t, string_size, 'out')],
-'since_firmware': [1, 0, 0],
-'doc': ['af', {
-'en':
-"""
-""",
-'de':
-"""
-"""
-}]
-})
-
-packets.append({
-'type': 'function',
 'name': ('VisionModuleResult', 'vision_module_result'),
 'elements': [('module_id', id_t, 1, 'in'),
              ('result', result_t, 1, 'out'),
