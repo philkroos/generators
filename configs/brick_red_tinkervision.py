@@ -308,7 +308,57 @@ packets.append({
 
 packets.append({
 'type': 'function',
+'name': ('VisionModuleGetID', 'vision_module_get_id'),
+'elements': [('library', 'int16', 1, 'in'),
+             ('result', 'int16', 1, 'out'),
+             ('id', 'int8', 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionModuleIsActive', 'vision_module_is_active'),
+'elements': [('id', 'int8', 1, 'in'),
+             ('result', 'int16', 1, 'out'),
+             ('active', 'uint8', 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
 'name': ('VisionLibsCount', 'vision_libs_count'),
+'elements': [('result', 'int16', 1, 'out'),
+             ('count', 'uint16', 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionLibsLoadedCount', 'vision_libs_loaded_count'),
 'elements': [('result', 'int16', 1, 'out'),
              ('count', 'uint16', 1, 'out')],
 'since_firmware': [1, 0, 0],
