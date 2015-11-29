@@ -431,7 +431,7 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionLibGetUserLoadPath', 'vision_lib_get_user_load_path'),
+'name': ('VisionLibGetUserPrefix', 'vision_lib_get_user_prefix'),
 'elements': [('result', 'int16', 1, 'out'),
              ('path', 'string', string_size, 'out')],
 'since_firmware': [1, 0, 0],
@@ -447,7 +447,7 @@ packets.append({
 
 packets.append({
 'type': 'function',
-'name': ('VisionLibSetUserLoadPath', 'vision_lib_set_user_load_path'),
+'name': ('VisionLibSetUserPrefix', 'vision_lib_set_user_prefix'),
 'elements': [('path', 'string', string_size, 'in'),
              ('result', 'int16', 1, 'out')],
 'since_firmware': [1, 0, 0],
