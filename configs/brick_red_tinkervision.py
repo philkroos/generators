@@ -19,9 +19,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Check if the library is valid. Should be called once before usage.
 """
 }]
 })
@@ -34,9 +32,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Check if the camera device is available.
 """
 }]
 })
@@ -51,9 +47,9 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Request the resolution of the camera frames.  This can only be called once
+the camera is active, so in particular, if the resolution needs to be known
+before a module can be started, vision_start_idle() must be called.
 """
 }]
 })
@@ -68,9 +64,11 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Selects a framesize WxH.
+This will temporarily stop and restart all active modules.
+If the requested framesize is not available, the settings will be restored
+to the last valid settings, if any.  If no module is running, the camera
+will just be tested.
 """
 }]
 })
@@ -83,9 +81,10 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Starts a dummy module keeping the Api up and running even if no 'real' module
+is active.  This can be used to block the camera or if the resolution has to
+be known before any module is running.  Subsequent calls will not start
+another dummy.
 """
 }]
 })
@@ -99,9 +98,11 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Set the minimum inverse frame frequency. Vision modules registered
+and started in the api will be executed sequentially during one
+execution loop. The execution latency set here is the minimum
+delay between two loops, i.e. the minimum inverse framerate
+(frames are grabbed once at the beginning of each loop).
 """
 }]
 })
@@ -115,9 +116,8 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Get the effective frameperiod, which can be larger than the frameperiod
+requested.
 """
 }]
 })
@@ -130,9 +130,10 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Pause Tinkervision, deactivating (but not disabling) every module.  The camera will
+be released and no further callbacks will be executed, but on vision_restart(), the Api
+will be found in the exact same state as left (assuming that the camera can
+be acquired again).
 """
 }]
 })
@@ -145,9 +146,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Restart Tinkervision from paused state, initiated through call to vision_stop().
 """
 }]
 })
@@ -163,9 +162,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Set the value of a numerical parameter of a specific module.
 """
 }]
 })
@@ -181,9 +178,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Get the value of a numerical parameter of a specific module.
 """
 }]
 })
@@ -199,9 +194,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Set the value of a string parameter of a specific module.
 """
 }]
 })
@@ -217,9 +210,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Get the value of a string parameter of a specific module.
 """
 }]
 })
@@ -234,9 +225,10 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Start a vision module identified by its library name.
+The requested module will be loaded and started if it is found in one of the
+available library search paths (system/user).
+On success, it will be assigned a unique id.
 """
 }]
 })
@@ -250,9 +242,10 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Disable a module without removing it.
+A disabled module won't be executed, but it is still available for
+configuration or reactivation. The associated camera will be released if it
+is not used by other modules.
 """
 }]
 })
@@ -266,9 +259,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Restart a module that has been stopped with module_stop().
 """
 }]
 })
@@ -282,9 +273,8 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Deactivate and remove a module.
+The id of a removed module is invalid afterwards.
 """
 }]
 })
@@ -299,9 +289,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Get the name of a loaded module.
 """
 }]
 })
@@ -316,9 +304,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Retrieve the id of a loaded library.
 """
 }]
 })
@@ -333,9 +319,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Check if a loaded module is active, i.e. actually running.
 """
 }]
 })
@@ -349,9 +333,9 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Get the number of currently available libraries.
+This can be used to iterate through all libraries using
+vision_lib_name_path().
 """
 }]
 })
@@ -365,9 +349,8 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Retrieve the number of loaded libraries.
+The result can be used with vision_module_get_id().
 """
 }]
 })
@@ -383,9 +366,8 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Get the name and load path of an available library.
+Pass a number smaller then vision_libs_count.
 """
 }]
 })
@@ -400,9 +382,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Get the number of parameters a library supports.
 """
 }]
 })
@@ -422,9 +402,8 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Get the properties of a parameter from a library. type is 0 for numeric parameters,
+1 for string parameters. min, max, default are only valid in the first case.
 """
 }]
 })
@@ -438,9 +417,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Access the currently set user paths prefix.
 """
 }]
 })
@@ -454,9 +431,10 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Set the user paths prefix from an existing path. The directory has to
+provide the subdirectories lib (path searched for user modules), data
+(default path to store or load data or frames from) and scripts (path used to load
+python scripts from).
 """
 }]
 })
@@ -470,9 +448,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Access the fixed system module load path.
 """
 }]
 })
@@ -485,9 +461,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Disable, remove and destroy all modules.
 """
 }]
 })
@@ -506,9 +480,22 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
+Get the result of the latest execution of a given module.
 """
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionSceneStart', 'vision_scene_start'),
+'elements': [('module_id', 'int8', 1, 'in'),
+             ('result', 'int16', 1, 'out'),
+             ('scene_id', 'int16', 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+Start a new scene given a loaded module.
 """
 }]
 })
@@ -523,9 +510,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Add a module to an existing scene.
 """
 }]
 })
@@ -539,9 +524,7 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Remove a scene without affecting the associated modules.
 """
 }]
 })
@@ -555,9 +538,8 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-""",
-'de':
-"""
+Get a string representation of a result code. All api functions return 0 on success,
+and a negative value on error.
 """
 }]
 })
@@ -575,9 +557,10 @@ packets.append({
 'doc': ['c', {
 'en':
 """
-""",
-'de':
-"""
+Callback for the result of a module's execution. Which values are set in the callback
+is module specific. The convention is that unset numerical values are -1, the string
+if unset is empty. x and y set would describe a point, x, y, width and height describes
+a rectangular area. string, if set, can be anything, e.g. the name of a stored frame.
 """
 }]
 })
@@ -592,9 +575,9 @@ packets.append({
 'doc': ['c', {
 'en':
 """
-""",
-'de':
-"""
+Callback for changes in the module system. Whenever a module is added to or removed
+from one the valid paths (system/user), this will be called with the module name,
+the path, and the status, where 1 means created, -1 means removed.
 """
 }]
 })
