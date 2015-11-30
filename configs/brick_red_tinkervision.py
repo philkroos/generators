@@ -547,6 +547,22 @@ packets.append({
 })
 
 packets.append({
+'type': 'function',
+'name': ('VisionGetErrorDescription', 'vision_get_error_description'),
+'elements': [('code', 'int16', 1, 'in'),
+             ('description', 'string', string_size, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+""",
+'de':
+"""
+"""
+}]
+})
+
+packets.append({
 'type': 'callback',
 'name': ('VisionModule', 'vision_module'),
 'elements': [('id', 'int8', 1, 'out'),
