@@ -546,6 +546,23 @@ and a negative value on error.
 
 packets.append({
 'type': 'callback',
+'name': ('VisionLibraries', 'vision_libraries'),
+'elements': [('name', 'string', string_size, 'out'),
+             ('path', 'string', string_size, 'out'),
+             ('status', 'int8', 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['c', {
+'en':
+"""
+Callback for changes in the module system. Whenever a module is added to or removed
+from one the valid paths (system/user), this will be called with the module name,
+the path, and the status, where 1 means created, -1 means removed.
+"""
+}]
+})
+
+packets.append({
+'type': 'callback',
 'name': ('VisionModule', 'vision_module'),
 'elements': [('id', 'int8', 1, 'out'),
              ('x', 'int32', 1, 'out'),
@@ -561,23 +578,6 @@ Callback for the result of a module's execution. Which values are set in the cal
 is module specific. The convention is that unset numerical values are -1, the string
 if unset is empty. x and y set would describe a point, x, y, width and height describes
 a rectangular area. string, if set, can be anything, e.g. the name of a stored frame.
-"""
-}]
-})
-
-packets.append({
-'type': 'callback',
-'name': ('VisionLibraries', 'vision_libraries'),
-'elements': [('name', 'string', string_size, 'out'),
-             ('path', 'string', string_size, 'out'),
-             ('status', 'int8', 1, 'out')],
-'since_firmware': [1, 0, 0],
-'doc': ['c', {
-'en':
-"""
-Callback for changes in the module system. Whenever a module is added to or removed
-from one the valid paths (system/user), this will be called with the module name,
-the path, and the status, where 1 means created, -1 means removed.
 """
 }]
 })
