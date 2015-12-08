@@ -32,7 +32,36 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-Check if the camera device is available.
+Check if any camera device is available.
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionCameraIDAvailable', 'vision_camera_id_available'),
+'elements': [('device', 'int8', 1, 'in'),
+             ('result', 'int16', 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+Check if a specific camera device is available.
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionCameraIDSelect', 'vision_camera_id_select'),
+'elements': [('device', 'int8', 1, 'in'),
+             ('result', 'int16', 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+If several cameras are available, select the preferred one.  If that device
+is not available, another one may still be used.
 """
 }]
 })
@@ -545,22 +574,16 @@ and a negative value on error.
 })
 
 packets.append({
-'type': 'callback',
-'name': ('VisionModule', 'vision_module'),
-'elements': [('id', 'int8', 1, 'out'),
-             ('x', 'int32', 1, 'out'),
-             ('y', 'int32', 1, 'out'),
-             ('width', 'int32', 1, 'out'),
-             ('height', 'int32', 1, 'out'),
-             ('string', 'string', string_size, 'out')],
+'type': 'function',
+'name': ('VisionGetBufferedResult', 'vision_get_buffered_result'),
+'elements': [('result', 'int16', 1, 'out')],
 'since_firmware': [1, 0, 0],
-'doc': ['c', {
+'doc': ['af', {
 'en':
 """
-Callback for the result of a module's execution. Which values are set in the callback
-is module specific. The convention is that unset numerical values are -1, the string
-if unset is empty. x and y set would describe a point, x, y, width and height describes
-a rectangular area. string, if set, can be anything, e.g. the name of a stored frame.
+If any vision method returned 1, the requested operation took too long and is running
+in the background.  This method can then be called until a different result is
+returned.
 """
 }]
 })
@@ -578,6 +601,27 @@ packets.append({
 Callback for changes in the module system. Whenever a module is added to or removed
 from one the valid paths (system/user), this will be called with the module name,
 the path, and the status, where 1 means created, -1 means removed.
+"""
+}]
+})
+
+packets.append({
+'type': 'callback',
+'name': ('VisionModule', 'vision_module'),
+'elements': [('id', 'int8', 1, 'out'),
+             ('x', 'int32', 1, 'out'),
+             ('y', 'int32', 1, 'out'),
+             ('width', 'int32', 1, 'out'),
+             ('height', 'int32', 1, 'out'),
+             ('string', 'string', string_size, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['c', {
+'en':
+"""
+Callback for the result of a module's execution. Which values are set in the callback
+is module specific. The convention is that unset numerical values are -1, the string
+if unset is empty. x and y set would describe a point, x, y, width and height describes
+a rectangular area. string, if set, can be anything, e.g. the name of a stored frame.
 """
 }]
 })
