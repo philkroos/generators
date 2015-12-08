@@ -32,7 +32,36 @@ packets.append({
 'doc': ['af', {
 'en':
 """
-Check if the camera device is available.
+Check if any camera device is available.
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionCameraIDAvailable', 'vision_camera_id_available'),
+'elements': [('device', 'int8', 1, 'in'),
+             ('result', 'int16', 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+Check if a specific camera device is available.
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionCameraIDSelect', 'vision_camera_id_select'),
+'elements': [('device', 'int8', 1, 'in'),
+             ('result', 'int16', 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+If several cameras are available, select the preferred one.  If that device
+is not available, another one may still be used.
 """
 }]
 })
@@ -540,6 +569,21 @@ packets.append({
 """
 Get a string representation of a result code. All api functions return 0 on success,
 and a negative value on error.
+"""
+}]
+})
+
+packets.append({
+'type': 'function',
+'name': ('VisionGetBufferedResult', 'vision_get_buffered_result'),
+'elements': [('result', 'int16', 1, 'out')],
+'since_firmware': [1, 0, 0],
+'doc': ['af', {
+'en':
+"""
+If any vision method returned 1, the requested operation took too long and is running
+in the background.  This method can then be called until a different result is
+returned.
 """
 }]
 })
